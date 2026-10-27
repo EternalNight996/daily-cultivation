@@ -1,4 +1,4 @@
-# iOS 工程（V1 · 相机链路切片）
+# iOS 工程 · 每日修仙（V1）
 
 > **状态**：已在 GitHub Actions 的 macOS runner 上**编译通过**、31 条单测全绿、
 > 并在 iPhone 模拟器里启动成功（截图见仓库 artifacts 或 CI 的 logs）。
