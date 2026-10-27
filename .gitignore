@@ -8,3 +8,4 @@ DerivedData/
 *.xcuserdatad
 xcuserdata/
 .idea/
+artifacts/

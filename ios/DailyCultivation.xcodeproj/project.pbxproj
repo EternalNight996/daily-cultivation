@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		032287A386E926A313E00C67 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9F341890A5FAD48F7D417FDE /* PrivacyInfo.xcprivacy */; };
+		0BA91F07180550528701BBF1 /* TalismanKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7AE97EFE941A301209B5F3F4 /* TalismanKit */; };
+		0D68DD037A7F4CB2395924CA /* settle.wav in Resources */ = {isa = PBXBuildFile; fileRef = F0C1A8A06F4A7B60D26147B5 /* settle.wav */; };
+		0D9EF1215E0C9369FC6302B3 /* CultivationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2438A48FBE582E647FED952F /* CultivationStore.swift */; };
+		1DCD373E5B207007E4F54819 /* SettlementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D218F7AE049B54EF7DB1F43D /* SettlementView.swift */; };
+		2719C3FDD130669FE2FD737A /* Shichen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21C47D446DE155BF700A5CC /* Shichen.swift */; };
+		34781110B7EC2BCA21E19AB4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0AFBB82D0CA69A1BFD9C76E /* RootView.swift */; };
+		48F72EE27C9086DB51F752CD /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DDD39D24513C6B3A65E5C1 /* CameraPreview.swift */; };
+		5245BCE041227573087E8299 /* DailyCultivationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564C0080A18ECAECF06636BE /* DailyCultivationApp.swift */; };
+		525F77F047A1834B0CF810B0 /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA286F5EA381107EC8BEE540 /* AppLog.swift */; };
+		533BBB2CB15D01D78CE8248B /* RitualParticlesLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234A36A300534B92058B838 /* RitualParticlesLayer.swift */; };
+		626D07EB38DA4C86CEAC2A5F /* ParticleTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = F207C4134D9F8646BF1A6327 /* ParticleTexture.swift */; };
+		6B478D99F6470FBD0E1F180B /* OnboardingTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDA90828B83064732A30609 /* OnboardingTip.swift */; };
+		740B68502DB6F81C43E3611C /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19967B057DA2AF4003C6695 /* AppModel.swift */; };
+		7724381BDA755C56366F526E /* StrokeRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D1ACB953C92CAD47EF9152 /* StrokeRecorder.swift */; };
+		7B3ACF7CA4C24E4C1646A0A8 /* CameraSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB5DA1B12BED72833CC392 /* CameraSession.swift */; };
+		7C276A2D15EC8FBCC350B33F /* AudioPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536DC9D6DCF25C0D9B856C45 /* AudioPool.swift */; };
+		8C97E943F15DE66FBFF2ACB6 /* FrameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4768AEE4C7495373FBE99423 /* FrameStore.swift */; };
+		98BC168448729DF1E3B39BDE /* PetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F7BAF32ACD05282FBA89DC /* PetView.swift */; };
+		9D4F371779C2E064CED97F5D /* tick.wav in Resources */ = {isa = PBXBuildFile; fileRef = FA2A79E32F512F47306E1FD8 /* tick.wav */; };
+		A1C3BC5C65A49EC669C2B9BC /* InkBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A17EB82A66CA748B973312 /* InkBackground.swift */; };
+		A910098CCBB563104A84E374 /* CameraPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDEC2EFFCC9532E353E0237 /* CameraPermission.swift */; };
+		AFBD2758AEED6F72BCED4565 /* TalismanCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF6A2E869DF51A64F1FA63A /* TalismanCanvasView.swift */; };
+		B5321173B43564B18666778F /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29D2BBCAD3F8F37C5575BC1 /* Haptics.swift */; };
+		B649A78DD3955E9D7191A158 /* CultivationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F61467AE8453DF86EE1262B6 /* CultivationModel.swift */; };
+		C83AA412206C6EFCE6BBE357 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4680C8845A1B0F0A2E977480 /* PersistenceController.swift */; };
+		CAFAD54C1F96B0F6F2DD6AA2 /* TalismanCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6C48D1AFFE4CBFFF642B6D /* TalismanCanvas.swift */; };
+		E445065BA4F627B177D7B6A6 /* RenderPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88384990C65EB695FBA1D7EA /* RenderPalette.swift */; };
+		F04634FB9B9D8DA02E867BF5 /* CameraRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F3216616656802A76131E1 /* CameraRenderer.swift */; };
+		F0F0F61C31DE3DEC7BEC9699 /* complete.wav in Resources */ = {isa = PBXBuildFile; fileRef = 213FDEBED748785266380A5C /* complete.wav */; };
+		FA7BEF15BFBDB7F269445FB2 /* PermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C153BC440672DFFB2F26C6 /* PermissionView.swift */; };
+		FAE6BDF92AB0BD1FCCBC2625 /* RitualSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2180079376AD791FA215654 /* RitualSession.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00A17EB82A66CA748B973312 /* InkBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InkBackground.swift; sourceTree = "<group>"; };
+		06C153BC440672DFFB2F26C6 /* PermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionView.swift; sourceTree = "<group>"; };
+		1EDEC2EFFCC9532E353E0237 /* CameraPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
+		213FDEBED748785266380A5C /* complete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = complete.wav; sourceTree = "<group>"; };
+		2438A48FBE582E647FED952F /* CultivationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CultivationStore.swift; sourceTree = "<group>"; };
+		36DDD39D24513C6B3A65E5C1 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		42D1ACB953C92CAD47EF9152 /* StrokeRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeRecorder.swift; sourceTree = "<group>"; };
+		4680C8845A1B0F0A2E977480 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		4768AEE4C7495373FBE99423 /* FrameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameStore.swift; sourceTree = "<group>"; };
+		536DC9D6DCF25C0D9B856C45 /* AudioPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPool.swift; sourceTree = "<group>"; };
+		564C0080A18ECAECF06636BE /* DailyCultivationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCultivationApp.swift; sourceTree = "<group>"; };
+		5AEAC3A72A60679CD4B5C9C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5E6C48D1AFFE4CBFFF642B6D /* TalismanCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalismanCanvas.swift; sourceTree = "<group>"; };
+		60BB5DA1B12BED72833CC392 /* CameraSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSession.swift; sourceTree = "<group>"; };
+		7C46CFC951A22144B9FE995B /* DailyCultivation.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DailyCultivation.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F6BB753963FA7A4EC29FCC5 /* TalismanKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TalismanKit; path = TalismanKit; sourceTree = SOURCE_ROOT; };
+		88384990C65EB695FBA1D7EA /* RenderPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPalette.swift; sourceTree = "<group>"; };
+		8CDA90828B83064732A30609 /* OnboardingTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTip.swift; sourceTree = "<group>"; };
+		9F341890A5FAD48F7D417FDE /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		A2180079376AD791FA215654 /* RitualSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RitualSession.swift; sourceTree = "<group>"; };
+		C0AFBB82D0CA69A1BFD9C76E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		C19967B057DA2AF4003C6695 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		C234A36A300534B92058B838 /* RitualParticlesLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RitualParticlesLayer.swift; sourceTree = "<group>"; };
+		D1F3216616656802A76131E1 /* CameraRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRenderer.swift; sourceTree = "<group>"; };
+		D218F7AE049B54EF7DB1F43D /* SettlementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementView.swift; sourceTree = "<group>"; };
+		E21C47D446DE155BF700A5CC /* Shichen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shichen.swift; sourceTree = "<group>"; };
+		F0C1A8A06F4A7B60D26147B5 /* settle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = settle.wav; sourceTree = "<group>"; };
+		F207C4134D9F8646BF1A6327 /* ParticleTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticleTexture.swift; sourceTree = "<group>"; };
+		F29D2BBCAD3F8F37C5575BC1 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		F61467AE8453DF86EE1262B6 /* CultivationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CultivationModel.swift; sourceTree = "<group>"; };
+		F9F7BAF32ACD05282FBA89DC /* PetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetView.swift; sourceTree = "<group>"; };
+		FA286F5EA381107EC8BEE540 /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
+		FA2A79E32F512F47306E1FD8 /* tick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tick.wav; sourceTree = "<group>"; };
+		FAF6A2E869DF51A64F1FA63A /* TalismanCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalismanCanvasView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B1B360F08CAE73FA9A5892A2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0BA91F07180550528701BBF1 /* TalismanKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1738574AE7575531C408EF6D /* Pet */ = {
+			isa = PBXGroup;
+			children = (
+				F9F7BAF32ACD05282FBA89DC /* PetView.swift */,
+			);
+			path = Pet;
+			sourceTree = "<group>";
+		};
+		202820A450688EC5F2243476 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7C46CFC951A22144B9FE995B /* DailyCultivation.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		222260AC6488F9630FD1797B /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				F61467AE8453DF86EE1262B6 /* CultivationModel.swift */,
+				2438A48FBE582E647FED952F /* CultivationStore.swift */,
+				4680C8845A1B0F0A2E977480 /* PersistenceController.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		2601D4FF69261C84473A632A /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C19967B057DA2AF4003C6695 /* AppModel.swift */,
+				564C0080A18ECAECF06636BE /* DailyCultivationApp.swift */,
+				00A17EB82A66CA748B973312 /* InkBackground.swift */,
+				8CDA90828B83064732A30609 /* OnboardingTip.swift */,
+				06C153BC440672DFFB2F26C6 /* PermissionView.swift */,
+				C0AFBB82D0CA69A1BFD9C76E /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		43593422EA3EE97E0CFE14C6 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				7F6BB753963FA7A4EC29FCC5 /* TalismanKit */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		7735AE8C0013A15A3FE898C2 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FA286F5EA381107EC8BEE540 /* AppLog.swift */,
+				E21C47D446DE155BF700A5CC /* Shichen.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		894C9F4001679F45CCB84000 /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				36DDD39D24513C6B3A65E5C1 /* CameraPreview.swift */,
+				D1F3216616656802A76131E1 /* CameraRenderer.swift */,
+				F207C4134D9F8646BF1A6327 /* ParticleTexture.swift */,
+				88384990C65EB695FBA1D7EA /* RenderPalette.swift */,
+			);
+			path = Render;
+			sourceTree = "<group>";
+		};
+		8C8817E3E9F39DBE9B0FC306 /* Talisman */ = {
+			isa = PBXGroup;
+			children = (
+				C234A36A300534B92058B838 /* RitualParticlesLayer.swift */,
+				42D1ACB953C92CAD47EF9152 /* StrokeRecorder.swift */,
+				5E6C48D1AFFE4CBFFF642B6D /* TalismanCanvas.swift */,
+				FAF6A2E869DF51A64F1FA63A /* TalismanCanvasView.swift */,
+			);
+			path = Talisman;
+			sourceTree = "<group>";
+		};
+		B4699E75FB94141F613CE139 /* Ritual */ = {
+			isa = PBXGroup;
+			children = (
+				536DC9D6DCF25C0D9B856C45 /* AudioPool.swift */,
+				F29D2BBCAD3F8F37C5575BC1 /* Haptics.swift */,
+				A2180079376AD791FA215654 /* RitualSession.swift */,
+				D218F7AE049B54EF7DB1F43D /* SettlementView.swift */,
+			);
+			path = Ritual;
+			sourceTree = "<group>";
+		};
+		BCEF91E10C77CB41AB56A4F2 = {
+			isa = PBXGroup;
+			children = (
+				C2EC2D0D1999F41B7A4082F3 /* DailyCultivation */,
+				43593422EA3EE97E0CFE14C6 /* Packages */,
+				202820A450688EC5F2243476 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BED22FDE5229515D38C530FC /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				1EDEC2EFFCC9532E353E0237 /* CameraPermission.swift */,
+				60BB5DA1B12BED72833CC392 /* CameraSession.swift */,
+				4768AEE4C7495373FBE99423 /* FrameStore.swift */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		BEE5CE8033E653A6672E0732 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D2C619F76A6E236BE506EB4B /* Audio */,
+				5AEAC3A72A60679CD4B5C9C3 /* Info.plist */,
+				9F341890A5FAD48F7D417FDE /* PrivacyInfo.xcprivacy */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C2EC2D0D1999F41B7A4082F3 /* DailyCultivation */ = {
+			isa = PBXGroup;
+			children = (
+				2601D4FF69261C84473A632A /* App */,
+				BED22FDE5229515D38C530FC /* Capture */,
+				7735AE8C0013A15A3FE898C2 /* Core */,
+				1738574AE7575531C408EF6D /* Pet */,
+				894C9F4001679F45CCB84000 /* Render */,
+				BEE5CE8033E653A6672E0732 /* Resources */,
+				B4699E75FB94141F613CE139 /* Ritual */,
+				222260AC6488F9630FD1797B /* Store */,
+				8C8817E3E9F39DBE9B0FC306 /* Talisman */,
+			);
+			path = DailyCultivation;
+			sourceTree = "<group>";
+		};
+		D2C619F76A6E236BE506EB4B /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				213FDEBED748785266380A5C /* complete.wav */,
+				F0C1A8A06F4A7B60D26147B5 /* settle.wav */,
+				FA2A79E32F512F47306E1FD8 /* tick.wav */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D8F45BDEE73B8F6D45292CE9 /* DailyCultivation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB524B97C9186422B87002DD /* Build configuration list for PBXNativeTarget "DailyCultivation" */;
+			buildPhases = (
+				D2BE3F8AA61FC8DEC079A230 /* Sources */,
+				4DAA97EF6B5EEA22054E3CAF /* Resources */,
+				B1B360F08CAE73FA9A5892A2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DailyCultivation;
+			packageProductDependencies = (
+				7AE97EFE941A301209B5F3F4 /* TalismanKit */,
+			);
+			productName = DailyCultivation;
+			productReference = 7C46CFC951A22144B9FE995B /* DailyCultivation.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF158D010B2F5C477CF3AAC3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					D8F45BDEE73B8F6D45292CE9 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = D91EFAB22C221593E0B3F1B0 /* Build configuration list for PBXProject "DailyCultivation" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BCEF91E10C77CB41AB56A4F2;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				151A654A703368D7BB8495A9 /* XCLocalSwiftPackageReference "TalismanKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 202820A450688EC5F2243476 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D8F45BDEE73B8F6D45292CE9 /* DailyCultivation */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4DAA97EF6B5EEA22054E3CAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				032287A386E926A313E00C67 /* PrivacyInfo.xcprivacy in Resources */,
+				F0F0F61C31DE3DEC7BEC9699 /* complete.wav in Resources */,
+				0D68DD037A7F4CB2395924CA /* settle.wav in Resources */,
+				9D4F371779C2E064CED97F5D /* tick.wav in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2BE3F8AA61FC8DEC079A230 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				525F77F047A1834B0CF810B0 /* AppLog.swift in Sources */,
+				740B68502DB6F81C43E3611C /* AppModel.swift in Sources */,
+				7C276A2D15EC8FBCC350B33F /* AudioPool.swift in Sources */,
+				A910098CCBB563104A84E374 /* CameraPermission.swift in Sources */,
+				48F72EE27C9086DB51F752CD /* CameraPreview.swift in Sources */,
+				F04634FB9B9D8DA02E867BF5 /* CameraRenderer.swift in Sources */,
+				7B3ACF7CA4C24E4C1646A0A8 /* CameraSession.swift in Sources */,
+				B649A78DD3955E9D7191A158 /* CultivationModel.swift in Sources */,
+				0D9EF1215E0C9369FC6302B3 /* CultivationStore.swift in Sources */,
+				5245BCE041227573087E8299 /* DailyCultivationApp.swift in Sources */,
+				8C97E943F15DE66FBFF2ACB6 /* FrameStore.swift in Sources */,
+				B5321173B43564B18666778F /* Haptics.swift in Sources */,
+				A1C3BC5C65A49EC669C2B9BC /* InkBackground.swift in Sources */,
+				6B478D99F6470FBD0E1F180B /* OnboardingTip.swift in Sources */,
+				626D07EB38DA4C86CEAC2A5F /* ParticleTexture.swift in Sources */,
+				FA7BEF15BFBDB7F269445FB2 /* PermissionView.swift in Sources */,
+				C83AA412206C6EFCE6BBE357 /* PersistenceController.swift in Sources */,
+				98BC168448729DF1E3B39BDE /* PetView.swift in Sources */,
+				E445065BA4F627B177D7B6A6 /* RenderPalette.swift in Sources */,
+				533BBB2CB15D01D78CE8248B /* RitualParticlesLayer.swift in Sources */,
+				FAE6BDF92AB0BD1FCCBC2625 /* RitualSession.swift in Sources */,
+				34781110B7EC2BCA21E19AB4 /* RootView.swift in Sources */,
+				1DCD373E5B207007E4F54819 /* SettlementView.swift in Sources */,
+				2719C3FDD130669FE2FD737A /* Shichen.swift in Sources */,
+				7724381BDA755C56366F526E /* StrokeRecorder.swift in Sources */,
+				CAFAD54C1F96B0F6F2DD6AA2 /* TalismanCanvas.swift in Sources */,
+				AFBD2758AEED6F72BCED4565 /* TalismanCanvasView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1F438A3331D78F70578808FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		32B8282E3D1B4AC7E57BA376 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D9C0006125A756018AB764CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = DailyCultivation/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailycultivation.app;
+				PRODUCT_NAME = DailyCultivation;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E32908FC2672E9C7EA9AA55D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = DailyCultivation/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailycultivation.app;
+				PRODUCT_NAME = DailyCultivation;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D91EFAB22C221593E0B3F1B0 /* Build configuration list for PBXProject "DailyCultivation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32B8282E3D1B4AC7E57BA376 /* Debug */,
+				1F438A3331D78F70578808FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EB524B97C9186422B87002DD /* Build configuration list for PBXNativeTarget "DailyCultivation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E32908FC2672E9C7EA9AA55D /* Debug */,
+				D9C0006125A756018AB764CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		151A654A703368D7BB8495A9 /* XCLocalSwiftPackageReference "TalismanKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = TalismanKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7AE97EFE941A301209B5F3F4 /* TalismanKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TalismanKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = BF158D010B2F5C477CF3AAC3 /* Project object */;
+}
