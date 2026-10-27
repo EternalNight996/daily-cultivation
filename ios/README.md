@@ -1,7 +1,10 @@
 # iOS 工程（V1 · 相机链路切片）
 
-> **状态**：代码已写，**尚未在 macOS 上编译过**。Windows 上没有 iOS SDK，这是硬限制。
-> Mac 到手的第一件事不是写功能，是按下面步骤把它跑起来、把编译错误清掉。
+> **状态**：已在 GitHub Actions 的 macOS runner 上**编译通过**、31 条单测全绿、
+> 并在 iPhone 模拟器里启动成功（截图见仓库 artifacts 或 CI 的 logs）。
+> 相机、震动、120Hz 手感仍只能在真机上验。
+>
+> **本地不需要 xcodegen**：仓库里已提交 CI 生成的 `DailyCultivation.xcodeproj`，克隆后直接打开即可。
 
 ## 结构
 
