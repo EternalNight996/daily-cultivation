@@ -45,5 +45,5 @@ pets = ["pet_idle_00.png","pet_cast_00.png","pet_resonate_00.png"]
 for i, n in enumerate(pets):
     tile("05-pet", n, 140, (900 + i*110, 990))
 
-sheet.save(os.path.join(ART, "preview.png"))
+sheet.convert("RGB").save(os.path.join(ART, "preview.jpg"), "JPEG", quality=88, optimize=True)
 print("ok")
