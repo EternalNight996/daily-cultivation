@@ -1,8 +1,32 @@
 import SwiftUI
 
-/// 冷灰水墨场景：天光 → 远山三层 → 雾带 → 近黑前景。
-/// 这是 V4 原型的 Swift 版本；等绘景资产到位后，把 MountainShape 换成一张图即可。
+/// 冷灰水墨场景：优先用绘景资产（按四时辰切），没有资产时退回纯代码五层山。
 struct InkBackground: View {
+    var shichen: Shichen = .current()
+
+    var body: some View {
+        ZStack {
+            if let ui = UIImage(named: "bg_\(shichen.rawValue)") {
+                Image(uiImage: ui)
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+
+                // 顶部一层极淡的白，保证标题与状态栏在任何一张绘景上都读得清
+                LinearGradient(colors: [Color.white.opacity(0.30), .clear],
+                               startPoint: .top,
+                               endPoint: UnitPoint(x: 0.5, y: 0.30))
+                    .ignoresSafeArea()
+            } else {
+                InkSceneVector()
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
+
+/// 没有绘景资产时的兜底：纯代码五层山。
+struct InkSceneVector: View {
     var body: some View {
         ZStack {
             LinearGradient(colors: [

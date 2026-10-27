@@ -1,8 +1,13 @@
 import SwiftUI
 
 /// 阿团：灵胎化形的小兽。
-/// V1 用矢量剪影——不做卡通大头，走"卧着的灵兽"轮廓：尖耳、长尾、杏仁眼。
+/// 有美术资产时用三态立绘（待机 / 随笔 / 共鸣）；没有就退回矢量剪影。
 struct PetView: View {
+    enum State: String {
+        case idle, cast, resonate
+    }
+
+    var state: State = .idle
     let gaze: CGSize
     let celebrating: Bool
 
@@ -15,19 +20,43 @@ struct PetView: View {
         ZStack {
             // 地面阴影
             Ellipse()
-                .fill(Color.black.opacity(0.18))
-                .frame(width: 48, height: 7)
-                .offset(y: 30)
+                .fill(Color.black.opacity(0.16))
+                .frame(width: 52, height: 7)
+                .offset(y: 31)
                 .blur(radius: 2)
 
-            // 尾巴
+            if let ui = UIImage(named: "pet_\(state.rawValue)") {
+                Image(uiImage: ui)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 96, height: 96)
+                    .scaleEffect(breathing ? 1.015 : 0.985, anchor: .bottom)
+                    .offset(y: celebrating ? -6 : 0)
+                    .transition(.opacity)
+            } else {
+                vectorBody
+            }
+        }
+        .frame(width: 96, height: 96)
+        .animation(.easeInOut(duration: 0.35), value: state)
+        .animation(.spring(response: 0.45, dampingFraction: 0.6), value: celebrating)
+        .onAppear {
+            withAnimation(.easeInOut(duration: 3.2).repeatForever(autoreverses: true)) {
+                breathing = true
+            }
+        }
+    }
+
+    // MARK: - 矢量兜底
+
+    private var vectorBody: some View {
+        ZStack {
             TailShape()
                 .fill(bodyGradient)
                 .frame(width: 34, height: 40)
                 .offset(x: 26, y: 12)
                 .rotationEffect(.degrees(breathing ? 4 : -2), anchor: .bottomLeading)
 
-            // 身体 + 头 + 耳，一体剪影
             PetSilhouette()
                 .fill(bodyGradient)
                 .frame(width: 76, height: 74)
@@ -37,25 +66,16 @@ struct PetView: View {
                         .frame(width: 76, height: 74)
                 )
 
-            // 眼睛
             eye.offset(x: -9 + gaze.width, y: -1 + gaze.height)
             eye.offset(x: 9 + gaze.width, y: -1 + gaze.height)
 
-            // 鼻尖
             Circle()
                 .fill(rim.opacity(0.55))
                 .frame(width: 2.2, height: 2.2)
                 .offset(y: 7)
         }
-        .frame(width: 96, height: 96)
         .scaleEffect(breathing ? 1.02 : 0.985, anchor: .bottom)
         .offset(y: celebrating ? -8 : 0)
-        .animation(.spring(response: 0.45, dampingFraction: 0.6), value: celebrating)
-        .onAppear {
-            withAnimation(.easeInOut(duration: 3.2).repeatForever(autoreverses: true)) {
-                breathing = true
-            }
-        }
     }
 
     private var bodyGradient: LinearGradient {
@@ -80,7 +100,6 @@ struct PetSilhouette: Shape {
         let cx = rect.midX
         let top = rect.minY
 
-        // 双耳（细长、略外斜）
         p.move(to: CGPoint(x: cx - 13, y: top + 22))
         p.addLine(to: CGPoint(x: cx - 21, y: top + 2))
         p.addLine(to: CGPoint(x: cx - 4, y: top + 18))
@@ -91,9 +110,7 @@ struct PetSilhouette: Shape {
         p.addLine(to: CGPoint(x: cx + 4, y: top + 18))
         p.closeSubpath()
 
-        // 头
         p.addEllipse(in: CGRect(x: cx - 17, y: top + 16, width: 34, height: 30))
-        // 身（卧姿，压扁一点）
         p.addEllipse(in: CGRect(x: cx - 25, y: top + 34, width: 50, height: 38))
 
         return p

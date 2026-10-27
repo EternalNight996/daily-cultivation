@@ -16,7 +16,7 @@ struct RootView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            InkBackground()
+            InkBackground(shichen: model.shichen)
 
             if model.cameraEnabled && model.permission == .authorized && !model.inkOnly {
                 CameraPreview(renderer: model.renderer)
@@ -156,7 +156,8 @@ struct RootView: View {
         VStack {
             Spacer()
             HStack {
-                PetView(gaze: model.ritual.gaze,
+                PetView(state: petState,
+                        gaze: model.ritual.gaze,
                         celebrating: model.ritual.phase == .settling)
                     .frame(width: 84, height: 84)
                     .offset(y: model.ritual.phase == .settling ? -170 : 0)
@@ -167,6 +168,12 @@ struct RootView: View {
             .padding(.bottom, 150)
         }
         .allowsHitTesting(false)
+    }
+
+    private var petState: PetView.State {
+        if model.ritual.phase == .settling { return .resonate }
+        if model.ritual.lastScore != nil { return .cast }
+        return .idle
     }
 
     // MARK: - 灵镜

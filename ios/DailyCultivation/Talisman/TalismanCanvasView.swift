@@ -95,7 +95,7 @@ final class TalismanCanvasView: UIView {
             let center = CGPoint(x: plateFrame.centerX, y: plateFrame.centerY)
             particles.configure(center: center, radius: plateFrame.size / 2)
             inkLayer.frame = CGRect(x: center.x - 180, y: center.y - 180, width: 360, height: 360)
-            sealView.center = CGPoint(x: center.x + 48, y: center.y + 72)
+            sealView.center = CGPoint(x: center.x + 52, y: center.y + 78)
         }
         refresh()
     }
@@ -177,21 +177,30 @@ final class TalismanCanvasView: UIView {
         inkLayer.opacity = 0
         layer.insertSublayer(inkLayer, at: 0)
 
-        sealView.backgroundColor = cinnabar
-        sealView.layer.cornerRadius = 3
-        sealView.layer.borderWidth = 1
-        sealView.layer.borderColor = UIColor(white: 1, alpha: 0.22).cgColor
-        sealView.bounds = CGRect(x: 0, y: 0, width: 36, height: 36)
+        sealView.backgroundColor = .clear
+        sealView.bounds = CGRect(x: 0, y: 0, width: 64, height: 64)
         sealView.alpha = 0
         sealView.isUserInteractionEnabled = false
         addSubview(sealView)
 
-        sealLabel.text = "敕"
-        sealLabel.font = UIFont(name: "Songti SC", size: 18) ?? .systemFont(ofSize: 18)
-        sealLabel.textColor = UIColor(red: 0.95, green: 0.89, blue: 0.82, alpha: 1)
-        sealLabel.textAlignment = .center
-        sealLabel.frame = sealView.bounds
-        sealView.addSubview(sealLabel)
+        if let image = UIImage(named: "seal_chi") {
+            // 有美术印就用印；边缘磨损是画进去的，不要再加描边
+            let sealImage = UIImageView(image: image)
+            sealImage.contentMode = .scaleAspectFit
+            sealImage.frame = sealView.bounds
+            sealView.addSubview(sealImage)
+        } else {
+            sealView.backgroundColor = cinnabar
+            sealView.layer.cornerRadius = 3
+            sealView.layer.borderWidth = 1
+            sealView.layer.borderColor = UIColor(white: 1, alpha: 0.22).cgColor
+            sealLabel.text = "敕"
+            sealLabel.font = UIFont(name: "Songti SC", size: 18) ?? .systemFont(ofSize: 18)
+            sealLabel.textColor = UIColor(red: 0.95, green: 0.89, blue: 0.82, alpha: 1)
+            sealLabel.textAlignment = .center
+            sealLabel.frame = sealView.bounds
+            sealView.addSubview(sealLabel)
+        }
 
     }
 
