@@ -2,6 +2,7 @@ import AVFoundation
 import Foundation
 import Observation
 import SwiftUI
+import TalismanKit
 
 extension Notification.Name {
     /// 「示范」按钮：让画布自动画完当前一笔（模拟器上用鼠标画不准时的兜底）
