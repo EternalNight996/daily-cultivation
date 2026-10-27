@@ -119,13 +119,19 @@ struct ShareCard: View {
     private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
     private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
 
+    private let cardSize = CGSize(width: 900, height: 1200)
+
     var body: some View {
         ZStack {
-            if UIImage(named: "paper_new") != nil {
-                Image("paper_new").resizable().scaledToFill()
-            } else {
-                Color(red: 0.93, green: 0.89, blue: 0.80)
+            Group {
+                if UIImage(named: "paper_new") != nil {
+                    Image("paper_new").resizable().scaledToFill()
+                } else {
+                    Color(red: 0.93, green: 0.89, blue: 0.80)
+                }
             }
+            .frame(width: cardSize.width, height: cardSize.height)
+            .clipped()
 
             VStack(spacing: 0) {
                 Text("每日修仙")
@@ -142,7 +148,7 @@ struct ShareCard: View {
                 Spacer(minLength: 0)
 
                 TalismanGlyph(strokes: talisman.strokes)
-                    .frame(width: 420, height: 420)
+                    .frame(width: 380, height: 380)
 
                 Spacer(minLength: 0)
 
@@ -176,8 +182,11 @@ struct ShareCard: View {
                     }
                 }
             }
-            .padding(56)
+            .padding(.horizontal, 64)
+            .padding(.vertical, 72)
+            .frame(width: cardSize.width, height: cardSize.height)
         }
+        .frame(width: cardSize.width, height: cardSize.height)
     }
 }
 
@@ -251,7 +260,6 @@ struct ShareCardSheet: View {
     private func render() {
         guard imageURL == nil else { return }
         let content = ShareCard(qi: qi, streak: streak, talisman: talisman, date: .now)
-            .frame(width: 900, height: 1200)
         let renderer = ImageRenderer(content: content)
         renderer.scale = 2
         guard let image = renderer.uiImage, let data = image.pngData() else { return }
