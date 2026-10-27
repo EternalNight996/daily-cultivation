@@ -3,15 +3,15 @@ import SwiftUI
 /// 阿团：灵胎化形的小兽。
 /// 有美术资产时用三态立绘（待机 / 随笔 / 共鸣）；没有就退回矢量剪影。
 struct PetView: View {
-    enum State: String {
+    enum Mood: String {
         case idle, cast, resonate
     }
 
-    var state: State = .idle
+    var state: Mood = .idle
     let gaze: CGSize
     let celebrating: Bool
 
-    @State private var breathing = false
+    @SwiftUI.State private var breathing = false
 
     private let cream = Color(red: 0.949, green: 0.910, blue: 0.835)
     private let rim = Color(red: 0.62, green: 0.52, blue: 0.36)

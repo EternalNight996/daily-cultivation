@@ -170,7 +170,7 @@ struct RootView: View {
         .allowsHitTesting(false)
     }
 
-    private var petState: PetView.State {
+    private var petState: PetView.Mood {
         if model.ritual.phase == .settling { return .resonate }
         if model.ritual.lastScore != nil { return .cast }
         return .idle
