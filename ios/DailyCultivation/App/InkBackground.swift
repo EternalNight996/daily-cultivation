@@ -29,8 +29,8 @@ struct InkBackground: View {
                     Color(red: 0.545, green: 0.608, blue: 0.631).opacity(0.55),
                     Color(red: 0.416, green: 0.486, blue: 0.510).opacity(0.85)
                 ], startPoint: .top, endPoint: .bottom))
-                .frame(height: h * 0.42)
-                .offset(y: h * 0.58)
+                .frame(height: h * 0.50)
+                .offset(y: h * 0.40)
 
                 MountainShape(peaks: [
                     (0.00, 0.72), (0.12, 0.60), (0.26, 0.69), (0.40, 0.55),
@@ -40,19 +40,19 @@ struct InkBackground: View {
                     Color(red: 0.369, green: 0.439, blue: 0.463).opacity(0.85),
                     Color(red: 0.271, green: 0.345, blue: 0.373).opacity(0.97)
                 ], startPoint: .top, endPoint: .bottom))
-                .frame(height: h * 0.36)
-                .offset(y: h * 0.64)
+                .frame(height: h * 0.44)
+                .offset(y: h * 0.55)
 
                 MountainShape(peaks: [
                     (0.00, 0.80), (0.15, 0.72), (0.33, 0.81), (0.50, 0.74),
                     (0.68, 0.82), (0.85, 0.75), (1.00, 0.80)
                 ])
                 .fill(Color(red: 0.106, green: 0.149, blue: 0.173).opacity(0.92))
-                .frame(height: h * 0.20)
-                .offset(y: h * 0.80)
+                .frame(height: h * 0.26)
+                .offset(y: h * 0.74)
 
-                mist(width: w * 1.4, height: 110).offset(x: -w * 0.2, y: h * 0.50)
-                mist(width: w * 1.5, height: 96).offset(x: w * 0.05, y: h * 0.64).opacity(0.7)
+                mist(width: w * 1.4, height: 120).offset(x: -w * 0.2, y: h * 0.44)
+                mist(width: w * 1.5, height: 100).offset(x: w * 0.05, y: h * 0.62).opacity(0.75)
             }
 
             LinearGradient(colors: [.clear, .black.opacity(0.18)],

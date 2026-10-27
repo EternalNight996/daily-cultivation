@@ -42,7 +42,7 @@
 
     <!-- 深色优先：界面固定深色，不跟随系统 -->
     <key>UIUserInterfaceStyle</key>
-    <string>Dark</string>
+    <string>Light</string>
 
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
