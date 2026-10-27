@@ -73,14 +73,13 @@ final class CultivationStore {
         request.sortDescriptors = [NSSortDescriptor(key: "startedAt", ascending: false)]
         request.fetchLimit = limit
         guard let rows = try? context.fetch(request) else { return [] }
-        return rows.compactMap { row in
-            guard let id = row.id, let date = row.startedAt else { return nil }
-            return Record(id: id,
-                          date: date,
-                          qi: Int(row.qi),
-                          score: row.score,
-                          strokes: Int(row.strokeCount),
-                          shichen: Shichen(rawValue: row.shichenRaw ?? "") ?? .chang)
+        return rows.map { row in
+            Record(id: row.id,
+                   date: row.startedAt,
+                   qi: Int(row.qi),
+                   score: row.score,
+                   strokes: Int(row.strokeCount),
+                   shichen: Shichen(rawValue: row.shichenRaw) ?? .chang)
         }
     }
 
