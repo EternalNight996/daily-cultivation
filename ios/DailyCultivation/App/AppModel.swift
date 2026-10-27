@@ -3,14 +3,21 @@ import Foundation
 import Observation
 import SwiftUI
 
+extension Notification.Name {
+    /// 「示范」按钮：让画布自动画完当前一笔（模拟器上用鼠标画不准时的兜底）
+    static let demoStroke = Notification.Name("dc.demoStroke")
+}
+
 @MainActor
 @Observable
 final class AppModel {
     var permission: CameraPermission = .notDetermined
-    /// 时辰在"进前台"时重算，HUD 与渲染共用它
-    var shichen: Shichen = .current()
     /// 用户拒绝/受限时仍可继续体验：退回水墨洞府，核心闭环不受影响
     var inkOnly = false
+    /// 相机默认关闭：点「灵镜」才开采集，省电也省隐私顾虑
+    var cameraEnabled = false
+    /// 进前台时重算，HUD 与渲染共用
+    var shichen: Shichen = .current()
 
     let camera: CameraSession
     let renderer: CameraRenderer
@@ -18,8 +25,6 @@ final class AppModel {
     private let store: CultivationStore
 
     init() {
-        // 不能写成 camera = CameraSession(); renderer = CameraRenderer(frames: camera.frames)
-        // 那会在 renderer 初始化前就访问 self.camera
         let camera = CameraSession()
         self.camera = camera
         self.renderer = CameraRenderer(frames: camera.frames)
@@ -30,7 +35,6 @@ final class AppModel {
     }
 
     func bootstrap() {
-        // 模拟器没有摄像头：直接进水墨兜底，否则会看到一块纯黑
         if AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) == nil {
             inkOnly = true
         }
@@ -39,8 +43,6 @@ final class AppModel {
         renderer.setShichen(shichen)
         ritual.refreshSnapshot()
         permission = .current
-        // 已授权才启动采集；未决定时先展示解释页，绝不冷启动直接弹系统权限框
-        if permission == .authorized { camera.start() }
     }
 
     func requestCamera() async {
@@ -50,23 +52,49 @@ final class AppModel {
         } else {
             permission = .current
         }
-        if permission == .authorized { camera.start() }
+        if permission == .authorized { cameraEnabled = true; camera.start() }
+    }
+
+    func toggleCamera() {
+        if cameraEnabled {
+            cameraEnabled = false
+            camera.stop()
+            return
+        }
+        if permission == .authorized {
+            cameraEnabled = true
+            camera.start()
+        } else {
+            Task { await requestCamera() }
+        }
+    }
+
+    func flipCamera() {
+        camera.flip()
+    }
+
+    func capturePhoto() {
+        camera.capturePhoto { data in
+            AppLog.capture.info("photo captured: \(data?.count ?? 0) bytes")
+        }
+    }
+
+    func drawDemoStroke() {
+        NotificationCenter.default.post(name: .demoStroke, object: nil)
     }
 
     func refreshPermission() {
         permission = .current
-        if permission == .authorized { camera.start() } else { camera.stop() }
     }
 
     func handleScenePhase(_ phase: ScenePhase) {
         switch phase {
         case .active:
-            // 回到前台时重算时辰：跨过 23:00/05:00 这类边界后，配色要跟着换
             shichen = Shichen.current()
             renderer.setShichen(shichen)
-            if permission == .authorized { camera.start() }
+            if cameraEnabled && permission == .authorized { camera.start() }
         case .inactive, .background:
-            // 进后台立刻停采集：省电，也避免"后台用相机"的隐私质疑
+            // 进后台一律停采集：省电，也避免"后台用相机"的隐私质疑
             camera.stop()
         @unknown default:
             break

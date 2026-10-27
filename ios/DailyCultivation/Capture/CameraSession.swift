@@ -13,7 +13,10 @@ final class CameraSession: NSObject, @unchecked Sendable {
     private let sessionQueue = DispatchQueue(label: "dc.capture.session", qos: .userInitiated)
     private let videoQueue = DispatchQueue(label: "dc.capture.video", qos: .userInitiated)
     private let output = AVCaptureVideoDataOutput()
+    private let photoOutput = AVCapturePhotoOutput()
     private var isConfigured = false
+    private var currentPosition: AVCaptureDevice.Position = .back
+    private var photoCompletion: ((Data?) -> Void)?
     private var observers: [NSObjectProtocol] = []
 
     override init() {
@@ -77,8 +80,47 @@ final class CameraSession: NSObject, @unchecked Sendable {
         guard session.canAddOutput(output) else { throw CameraError.cannotAddOutput }
         session.addOutput(output)
 
+        if session.canAddOutput(photoOutput) { session.addOutput(photoOutput) }
+
         // 竖屏取景：采集侧不旋转（逐帧物理旋转有成本），在渲染层用 .oriented(.right)
         output.connection(with: .video)?.videoRotationAngle = 0
+    }
+
+    /// 前后摄切换：只在灵镜态可用，切完保持 session 运行
+    func flip() {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            let next: AVCaptureDevice.Position = self.currentPosition == .back ? .front : .back
+            guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: next),
+                  let input = try? AVCaptureDeviceInput(device: device) else { return }
+            guard let current = self.session.inputs.first(where: {
+                ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.video) == true
+            }) else { return }
+
+            self.session.beginConfiguration()
+            self.session.removeInput(current)
+            if self.session.canAddInput(input) {
+                self.session.addInput(input)
+                self.currentPosition = next
+            } else if let currentInput = current as? AVCaptureDeviceInput,
+                      let fallback = try? AVCaptureDeviceInput(device: currentInput.device) {
+                self.session.addInput(fallback)
+            }
+            self.session.commitConfiguration()
+        }
+    }
+
+    /// 留影：只取一帧数据，不写相册（写相册需要额外权限与审核说明）
+    func capturePhoto(completion: @escaping (Data?) -> Void) {
+        sessionQueue.async { [weak self] in
+            guard let self, self.session.isRunning else {
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            self.photoCompletion = completion
+            let settings = AVCapturePhotoSettings()
+            self.photoOutput.capturePhoto(with: settings, delegate: self)
+        }
     }
 
     private func observeInterruptions() {
@@ -118,6 +160,17 @@ enum CameraError: Error {
     case noDevice
     case cannotAddInput
     case cannotAddOutput
+}
+
+extension CameraSession: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput,
+                     didFinishProcessingPhoto photo: AVCapturePhoto,
+                     error: Error?) {
+        let data = photo.fileDataRepresentation()
+        let completion = photoCompletion
+        photoCompletion = nil
+        DispatchQueue.main.async { completion?(data) }
+    }
 }
 
 extension CameraSession: AVCaptureVideoDataOutputSampleBufferDelegate {

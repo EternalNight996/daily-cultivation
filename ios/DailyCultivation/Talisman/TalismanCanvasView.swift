@@ -23,8 +23,10 @@ final class TalismanCanvasView: UIView {
     private var plateFrame: TalismanFrame?
     private var recorder = StrokeRecorder()
     private var isDrawing = false
+    private var demoObserver: NSObjectProtocol?
 
-    private let gold = UIColor(red: 0.79, green: 0.64, blue: 0.36, alpha: 1)
+    private let ink = UIColor(red: 0.09, green: 0.13, blue: 0.15, alpha: 1)
+    private let cinnabar = UIColor(red: 0.557, green: 0.184, blue: 0.133, alpha: 1)
 
     init(session: RitualSession) {
         self.session = session
@@ -35,6 +37,47 @@ final class TalismanCanvasView: UIView {
         setupDot()
         setupHint()
         setupDecor()
+
+        // 「示范」按钮：让画布自动画完当前一笔
+        demoObserver = NotificationCenter.default.addObserver(
+            forName: .demoStroke, object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.drawDemoStroke() }
+        }
+    }
+
+    deinit {
+        if let demoObserver { NotificationCenter.default.removeObserver(demoObserver) }
+    }
+
+    /// 沿着当前笔的模板点画一遍，用于模拟器验收（鼠标拖拽采样太差）
+    func drawDemoStroke() {
+        guard session.phase == .drawing, let stroke = session.expectedStroke, stroke.count > 1 else { return }
+
+        var dense: [Vec2] = []
+        for i in 1..<stroke.count {
+            let a = stroke[i - 1], b = stroke[i]
+            let dx = b.x - a.x, dy = b.y - a.y
+            let steps = max(2, Int((dx * dx + dy * dy).squareRoot() * 60))
+            for s in 0..<steps {
+                let t = Double(s) / Double(steps)
+                dense.append(Vec2(x: a.x + dx * t, y: a.y + dy * t))
+            }
+        }
+        if let last = stroke.last { dense.append(last) }
+
+        let accepted = session.judge(dense)
+        if accepted {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred(intensity: 0.6)
+            if session.phase == .settling, let pf = plateFrame {
+                particles.fireBurst(at: CGPoint(x: pf.centerX, y: pf.centerY))
+                animateSeal()
+                animateInk()
+            }
+        }
+        recorder.reset()
+        trailLayer.path = nil
+        refresh()
     }
 
     @available(*, unavailable)
@@ -84,14 +127,14 @@ final class TalismanCanvasView: UIView {
         }
         layer.addSublayer(particles)
 
-        faintLayer.strokeColor = UIColor(white: 0.93, alpha: 0.16).cgColor
+        faintLayer.strokeColor = ink.withAlphaComponent(0.16).cgColor
         faintLayer.lineWidth = 1.6
         faintLayer.lineDashPattern = [5, 10]
 
-        doneLayer.strokeColor = gold.withAlphaComponent(0.55).cgColor
+        doneLayer.strokeColor = ink.withAlphaComponent(0.72).cgColor
         doneLayer.lineWidth = 2.2
 
-        guideLayer.strokeColor = UIColor(white: 0.93, alpha: 0.5).cgColor
+        guideLayer.strokeColor = ink.withAlphaComponent(0.42).cgColor
         guideLayer.lineWidth = 2
         guideLayer.lineDashPattern = [6, 9]
         let flow = CABasicAnimation(keyPath: "lineDashPhase")
@@ -101,9 +144,9 @@ final class TalismanCanvasView: UIView {
         flow.repeatCount = .infinity
         guideLayer.add(flow, forKey: "flow")
 
-        trailLayer.strokeColor = UIColor(red: 1.0, green: 0.95, blue: 0.85, alpha: 0.95).cgColor
+        trailLayer.strokeColor = ink.withAlphaComponent(0.88).cgColor
         trailLayer.lineWidth = 5
-        trailLayer.shadowColor = gold.cgColor
+        trailLayer.shadowColor = ink.withAlphaComponent(0.5).cgColor
         trailLayer.shadowRadius = 9
         trailLayer.shadowOpacity = 0.9
         trailLayer.shadowOffset = .zero
@@ -111,9 +154,9 @@ final class TalismanCanvasView: UIView {
 
     private func setupDot() {
         dot.isUserInteractionEnabled = false
-        dot.backgroundColor = gold
+        dot.backgroundColor = cinnabar
         dot.layer.cornerRadius = 7
-        dot.layer.shadowColor = gold.cgColor
+        dot.layer.shadowColor = cinnabar.cgColor
         dot.layer.shadowRadius = 12
         dot.layer.shadowOpacity = 0.9
         dot.layer.shadowOffset = .zero
@@ -133,14 +176,14 @@ final class TalismanCanvasView: UIView {
     /// 宣纸般安静的装饰：极淡墨晕 + 落印 + 符名（宋体）。全部是纯代码，不占包体。
     private func setupDecor() {
         inkLayer.type = .radial
-        inkLayer.colors = [gold.withAlphaComponent(0.20).cgColor, UIColor.clear.cgColor]
+        inkLayer.colors = [cinnabar.withAlphaComponent(0.16).cgColor, UIColor.clear.cgColor]
         inkLayer.locations = [0, 0.7]
         inkLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
         inkLayer.endPoint = CGPoint(x: 1, y: 1)
         inkLayer.opacity = 0
         layer.insertSublayer(inkLayer, at: 0)
 
-        sealView.backgroundColor = UIColor(red: 0.65, green: 0.23, blue: 0.18, alpha: 1)
+        sealView.backgroundColor = cinnabar
         sealView.layer.cornerRadius = 3
         sealView.layer.borderWidth = 1
         sealView.layer.borderColor = UIColor(white: 1, alpha: 0.22).cgColor
@@ -158,7 +201,7 @@ final class TalismanCanvasView: UIView {
 
         plateNameLabel.textAlignment = .center
         plateNameLabel.font = UIFont(name: "Songti SC", size: 12) ?? .systemFont(ofSize: 12)
-        plateNameLabel.textColor = UIColor(white: 0.93, alpha: 0.34)
+        plateNameLabel.textColor = ink.withAlphaComponent(0.42)
         plateNameLabel.isUserInteractionEnabled = false
         addSubview(plateNameLabel)
     }

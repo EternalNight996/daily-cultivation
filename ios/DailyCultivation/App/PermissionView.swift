@@ -5,6 +5,9 @@ struct PermissionView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.openURL) private var openURL
 
+    private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
+    private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
+
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
@@ -12,13 +15,13 @@ struct PermissionView: View {
             Text("洞府未开")
                 .font(.system(size: 26, weight: .light))
                 .tracking(8)
-                .foregroundStyle(.white.opacity(0.92))
+                .foregroundStyle(ink)
 
             Text(bodyText)
                 .font(.system(size: 13))
                 .lineSpacing(7)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(.white.opacity(0.55))
+                .foregroundStyle(ink.opacity(0.55))
                 .padding(.horizontal, 46)
                 .padding(.top, 18)
 
@@ -26,12 +29,12 @@ struct PermissionView: View {
                 Text(title)
                     .font(.system(size: 14))
                     .tracking(3)
-                    .foregroundStyle(Color(red: 0.79, green: 0.64, blue: 0.36))
+                    .foregroundStyle(cinnabar)
                     .frame(maxWidth: .infinity)
                     .frame(height: 48)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(red: 0.79, green: 0.64, blue: 0.36).opacity(0.45), lineWidth: 1)
+                            .stroke(cinnabar.opacity(0.45), lineWidth: 1)
                     )
             }
             .padding(.horizontal, 48)
@@ -39,7 +42,7 @@ struct PermissionView: View {
 
             Text("画面只在这台 iPhone 上处理，不上传、不保存。")
                 .font(.system(size: 11))
-                .foregroundStyle(.white.opacity(0.3))
+                .foregroundStyle(ink.opacity(0.4))
                 .padding(.top, 16)
 
             if model.permission == .denied || model.permission == .restricted {
@@ -47,7 +50,7 @@ struct PermissionView: View {
                     model.inkOnly = true
                 }
                 .font(.system(size: 13))
-                .foregroundStyle(.white.opacity(0.45))
+                .foregroundStyle(ink.opacity(0.5))
                 .padding(.top, 22)
             }
 
