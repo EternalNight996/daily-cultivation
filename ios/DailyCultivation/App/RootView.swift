@@ -12,7 +12,12 @@ struct RootView: View {
     @AppStorage("dc.sound") private var soundOn = true
     @AppStorage("dc.haptics") private var hapticsOn = true
     @AppStorage("dc.judge") private var judgeLevel = 1
-    @State private var showSettings = false
+    @State private var activeSheet: ActiveSheet?
+
+    private enum ActiveSheet: String, Identifiable {
+        case settings, history
+        var id: String { rawValue }
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -60,6 +65,12 @@ struct RootView: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .zIndex(20)
             }
+
+            if model.ritual.phase == .resting && model.ritual.settlement == nil {
+                restingCard
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .zIndex(21)
+            }
         }
         .background { InkBackground(shichen: model.shichen) }
         .animation(.easeInOut(duration: 0.35), value: model.permission)
@@ -75,9 +86,14 @@ struct RootView: View {
             Haptics.isEnabled = hapticsOn
             model.applyJudgeLevel(judgeLevel)
         }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-                .presentationDetents([.medium, .large])
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .settings:
+                SettingsView()
+                    .presentationDetents([.medium, .large])
+            case .history:
+                NavigationStack { HistoryView() }
+            }
         }
     }
 
@@ -185,6 +201,58 @@ struct RootView: View {
         return .idle
     }
 
+    // MARK: - 今日圆满
+
+    private var restingCard: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            VStack(spacing: 16) {
+                Text("今日已圆满")
+                    .font(.custom("Songti SC", size: 24))
+                    .tracking(8)
+                    .foregroundStyle(ink.opacity(0.9))
+
+                Text("三道符已画完，明日 04:00 再会")
+                    .font(.system(size: 12))
+                    .tracking(1.5)
+                    .foregroundStyle(ink.opacity(0.5))
+
+                TimelineView(.periodic(from: .now, by: 1)) { _ in
+                    Text(timeUntilReset())
+                        .font(.system(size: 30, weight: .light))
+                        .monospacedDigit()
+                        .foregroundStyle(cinnabar.opacity(0.85))
+                }
+
+                HStack(spacing: 12) {
+                    Button("看修行录") { activeSheet = .history }
+                        .font(.system(size: 13))
+                        .foregroundStyle(cinnabar)
+                    Text("·").foregroundStyle(ink.opacity(0.2))
+                    Text("明早 04:00 见")
+                        .font(.system(size: 13))
+                        .foregroundStyle(ink.opacity(0.45))
+                }
+                .padding(.top, 4)
+            }
+            .padding(.vertical, 26)
+            .frame(maxWidth: .infinity)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24))
+            .overlay(RoundedRectangle(cornerRadius: 24).stroke(ink.opacity(0.12), lineWidth: 1))
+            .padding(.horizontal, 22)
+            .padding(.bottom, 44)
+        }
+    }
+
+    /// 修炼日以 04:00 为界，倒计时到下一个 04:00
+    private func timeUntilReset(now: Date = .now) -> String {
+        let cal = Calendar.current
+        let today4 = cal.date(bySettingHour: 4, minute: 0, second: 0, of: now) ?? now
+        let next = now < today4 ? today4 : (cal.date(byAdding: .day, value: 1, to: today4) ?? today4)
+        let seconds = max(0, Int(next.timeIntervalSince(now)))
+        return String(format: "%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60)
+    }
+
     // MARK: - 灵镜
 
     private var cameraControls: some View {
@@ -201,7 +269,7 @@ struct RootView: View {
                         circleButton("留影", primary: false) { model.capturePhoto() }
                     }
                     circleButton("示范", primary: false) { model.drawDemoStroke() }
-                    circleButton("设置", primary: false) { showSettings = true }
+                    circleButton("设置", primary: false) { activeSheet = .settings }
                 }
                 .padding(.trailing, 18)
                 .padding(.bottom, 96)
@@ -262,6 +330,12 @@ struct SettingsView: View {
                     Text("宽松适合第一次玩；严格会更看重笔形与收笔位置。")
                 }
 
+                Section {
+                    NavigationLink("修行录") { HistoryView() }
+                } header: {
+                    Text("修行")
+                }
+
                 Section("数据") {
                     Button("重置今日修行", role: .destructive) { confirmReset = true }
                     LabeledContent("连续天数", value: "\(model.ritual.snapshot.streak) 天")
@@ -299,3 +373,74 @@ struct SettingsView: View {
     }
 }
 
+
+// MARK: - 修行录
+
+struct HistoryView: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
+
+    private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
+    private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
+
+    var body: some View {
+        Group {
+            if model.records.isEmpty {
+                ContentUnavailableView(
+                    "还没有记录",
+                    systemImage: "square.and.pencil",
+                    description: Text("画完第一道符，这里就会记下它。")
+                )
+            } else {
+                List {
+                    Section {
+                        LabeledContent("累计施法", value: "\(model.ritual.snapshot.totalCasts) 次")
+                        LabeledContent("连续修行", value: "\(model.ritual.snapshot.streak) 天")
+                        LabeledContent("今日已施法", value: "\(model.ritual.snapshot.castsToday) 次")
+                    }
+
+                    Section("最近") {
+                        ForEach(model.records) { record in
+                            row(record)
+                        }
+                    }
+                }
+                .listStyle(.insetGrouped)
+            }
+        }
+        .navigationTitle("修行录")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("完成") { dismiss() }
+            }
+        }
+        .task { model.loadRecords() }
+        .tint(cinnabar)
+    }
+
+    private func row(_ record: CultivationStore.Record) -> some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(record.date, format: .dateTime.month().day().hour().minute())
+                    .font(.system(size: 14))
+                    .foregroundStyle(ink.opacity(0.85))
+                Text(record.shichen.label)
+                    .font(.system(size: 11))
+                    .foregroundStyle(ink.opacity(0.4))
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 3) {
+                Text("+\(record.qi)")
+                    .font(.system(size: 14, weight: .medium))
+                    .monospacedDigit()
+                    .foregroundStyle(cinnabar)
+                Text(String(format: "%.0f%%", record.score * 100))
+                    .font(.system(size: 11))
+                    .monospacedDigit()
+                    .foregroundStyle(ink.opacity(0.4))
+            }
+        }
+        .padding(.vertical, 2)
+    }
+}

@@ -23,6 +23,8 @@ final class AppModel {
     let camera: CameraSession
     let renderer: CameraRenderer
     let ritual = RitualSession()
+    /// 修行录（最近 60 次）
+    var records: [CultivationStore.Record] = []
     private let store: CultivationStore
 
     init() {
@@ -43,6 +45,8 @@ final class AppModel {
         shichen = Shichen.current()
         renderer.setShichen(shichen)
         ritual.refreshSnapshot()
+        ritual.syncDailyLimit()
+        records = store.recentRecords()
         permission = .current
     }
 
@@ -101,6 +105,12 @@ final class AppModel {
     func resetToday() {
         store.resetForDebug()
         ritual.refreshSnapshot()
+        ritual.syncDailyLimit()
+        records = []
+    }
+
+    func loadRecords() {
+        records = store.recentRecords()
     }
 
     func drawDemoStroke() {

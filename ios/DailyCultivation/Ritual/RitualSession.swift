@@ -10,7 +10,13 @@ final class RitualSession {
     enum Phase: Equatable {
         case drawing
         case settling
+        /// 今日三符已满：只展示"圆满"卡片，不再接受画符
+        case resting
     }
+
+    /// 每日上限：3 次施法。灵气本身还有软上限，这里只控制"次数"
+    static let dailyCastLimit = 3
+    var isDailyLimitReached: Bool { snapshot.castsToday >= Self.dailyCastLimit }
 
     var phase: Phase = .drawing
     var talisman: Talisman = TalismanLibrary.qingxin
@@ -116,11 +122,17 @@ final class RitualSession {
     }
 
     func reset() {
-        phase = .drawing
         strokeIndex = 0
         accepted = []
         settlement = nil
         lastScore = nil
         hint = nil
+        phase = isDailyLimitReached ? .resting : .drawing
+    }
+
+    /// 冷启动时调用：今天已满就直接进"圆满"态
+    func syncDailyLimit() {
+        guard settlement == nil else { return }
+        phase = isDailyLimitReached ? .resting : .drawing
     }
 }

@@ -11,6 +11,8 @@ final class TalismanCanvasView: UIView {
     private let doneLayer = CAShapeLayer()
     private let guideLayer = CAShapeLayer()
     private let trailLayer = CAShapeLayer()
+    private let startCapLayer = CALayer()
+    private let endCapLayer = CALayer()
     private let dot = UIView()
     private let hintLabel = UILabel()
     private let sealView = UIView()
@@ -76,6 +78,7 @@ final class TalismanCanvasView: UIView {
         }
         recorder.reset()
         trailLayer.path = nil
+        hideCaps()
         refresh()
     }
 
@@ -107,7 +110,8 @@ final class TalismanCanvasView: UIView {
         drawStrokes(plateFrame)
         layoutDot(plateFrame)
         if session.phase == .drawing { clearDecor() }
-        if !isDrawing { trailLayer.path = nil }
+        if !isDrawing { trailLayer.path = nil
+        hideCaps() }
     }
 
     // MARK: - 图层
@@ -144,6 +148,26 @@ final class TalismanCanvasView: UIView {
         trailLayer.shadowRadius = 9
         trailLayer.shadowOpacity = 0.9
         trailLayer.shadowOffset = .zero
+
+        // 笔锋：起笔与收笔各贴一张真实笔触，中段仍是矢量线（全贴图版本等真机调完再上）
+        for cap in [startCapLayer, endCapLayer] {
+            cap.contentsGravity = .resizeAspect
+            cap.opacity = 0
+            self.layer.addSublayer(cap)
+        }
+        startCapLayer.contents = Self.tinted(UIImage(named: "brush_start"), color: ink)?.cgImage
+        endCapLayer.contents = Self.tinted(UIImage(named: "brush_end"), color: ink)?.cgImage
+    }
+
+    private static func tinted(_ image: UIImage?, color: UIColor) -> UIImage? {
+        guard let image else { return nil }
+        let format = UIGraphicsImageRendererFormat.default()
+        format.opaque = false
+        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+            image.draw(at: .zero)
+            color.setFill()
+            UIRectFillUsingBlendMode(CGRect(origin: .zero, size: image.size), .sourceIn)
+        }
     }
 
     private func setupDot() {
@@ -255,7 +279,7 @@ final class TalismanCanvasView: UIView {
     }
 
     private func layoutDot(_ frame: TalismanFrame) {
-        guard let start = session.expectedStroke?.first else {
+        guard session.phase == .drawing, let start = session.expectedStroke?.first else {
             dot.isHidden = true
             return
         }
@@ -267,6 +291,7 @@ final class TalismanCanvasView: UIView {
         let points = recorder.points
         guard points.count > 1 else {
             trailLayer.path = nil
+            hideCaps()
             return
         }
         let p = UIBezierPath()
@@ -275,6 +300,38 @@ final class TalismanCanvasView: UIView {
             if index == 0 { p.move(to: s) } else { p.addLine(to: s) }
         }
         trailLayer.path = p.cgPath
+        layoutCaps(points)
+    }
+
+    private func layoutCaps(_ points: [Vec2]) {
+        guard points.count > 1,
+              let first = points.first, let second = points.dropFirst().first,
+              let last = points.last, let beforeLast = points.dropLast().last else {
+            hideCaps()
+            return
+        }
+
+        let startAngle = atan2(second.y - first.y, second.x - first.x)
+        let endAngle = atan2(last.y - beforeLast.y, last.x - beforeLast.x)
+
+        let capSize: CGFloat = 46
+        startCapLayer.bounds = CGRect(x: 0, y: 0, width: capSize, height: capSize)
+        endCapLayer.bounds = CGRect(x: 0, y: 0, width: capSize, height: capSize)
+        startCapLayer.position = CGPoint(x: first.x, y: first.y)
+        endCapLayer.position = CGPoint(x: last.x, y: last.y)
+        startCapLayer.setAffineTransform(CGAffineTransform(rotationAngle: startAngle))
+        endCapLayer.setAffineTransform(CGAffineTransform(rotationAngle: endAngle))
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        startCapLayer.opacity = 0.92
+        endCapLayer.opacity = 0.92
+        CATransaction.commit()
+    }
+
+    private func hideCaps() {
+        startCapLayer.opacity = 0
+        endCapLayer.opacity = 0
     }
 
     // MARK: - 触摸
@@ -339,6 +396,7 @@ final class TalismanCanvasView: UIView {
         isDrawing = false
         recorder.reset()
         trailLayer.path = nil
+        hideCaps()
         particles.setTrailPoint(.zero, active: false)
         updateGaze(nil)
         refresh()
@@ -353,6 +411,7 @@ final class TalismanCanvasView: UIView {
         let length = recorder.length
         recorder.reset()
         trailLayer.path = nil
+        hideCaps()
         particles.setTrailPoint(.zero, active: false)
 
         guard points.count >= 8, length >= 64 else {

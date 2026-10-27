@@ -23,6 +23,16 @@ final class CultivationStore {
         var isFirstOfDay: Bool { castsToday == 0 }
     }
 
+    /// 修行录里的一行
+    struct Record: Identifiable, Equatable {
+        let id: UUID
+        let date: Date
+        let qi: Int
+        let score: Double
+        let strokes: Int
+        let shichen: Shichen
+    }
+
     private enum Key {
         static let streak = "dc.v1.streak"
         static let longest = "dc.v1.longest"
@@ -55,6 +65,23 @@ final class CultivationStore {
                         castsToday: Int(day?.casts ?? 0),
                         totalCasts: defaults.integer(forKey: Key.totalCasts),
                         title: Title.forStreak(displayStreak(stored: storedStreak, lastActive: lastActive, now: now)))
+    }
+
+    /// 修行录：最近的施法记录，倒序
+    func recentRecords(limit: Int = 60) -> [Record] {
+        let request = NSFetchRequest<CultivationSession>(entityName: "CultivationSession")
+        request.sortDescriptors = [NSSortDescriptor(key: "startedAt", ascending: false)]
+        request.fetchLimit = limit
+        guard let rows = try? context.fetch(request) else { return [] }
+        return rows.compactMap { row in
+            guard let id = row.id, let date = row.startedAt else { return nil }
+            return Record(id: id,
+                          date: date,
+                          qi: Int(row.qi),
+                          score: row.score,
+                          strokes: Int(row.strokeCount),
+                          shichen: Shichen(rawValue: row.shichenRaw ?? "") ?? .chang)
+        }
     }
 
     /// 展示用连续天数：今天已来或昨天来过 → 保留；否则显示 0（但不清账，下次施法会重算）。
