@@ -9,3 +9,5 @@ DerivedData/
 xcuserdata/
 .idea/
 artifacts/
+# AI 生成的原始图（已入库到 assets/art，原图只留本地）
+assets/_raw/

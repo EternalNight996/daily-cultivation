@@ -11,7 +11,7 @@ except Exception:
 from PIL import Image
 
 ROOT = r"F:\MyApp\eternal\DailyCultivation"
-SRC = os.path.join(ROOT, "assets")
+SRC = os.path.join(ROOT, "assets", "_raw")
 ART = os.path.join(SRC, "art")
 
 MAPPING = {
