@@ -6,6 +6,8 @@ import UIKit
 @MainActor
 final class Haptics {
     static let shared = Haptics()
+    /// 设置里可以关掉；关掉后只保留系统级轻反馈
+    static var isEnabled = true
 
     private var engine: CHHapticEngine?
     private let supportsHaptics = CHHapticEngine.capabilitiesForHardware().supportsHaptics
@@ -100,7 +102,7 @@ final class Haptics {
     }
 
     private func play(events: [CHHapticEvent]) {
-        guard supportsHaptics else { return }
+        guard Haptics.isEnabled, supportsHaptics else { return }
         guard let engine else {
             prepare()
             return

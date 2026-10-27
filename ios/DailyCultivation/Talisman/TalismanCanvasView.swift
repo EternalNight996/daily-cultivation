@@ -277,11 +277,24 @@ final class TalismanCanvasView: UIView {
 
         let p = touch.location(in: self)
         let target = screenPoint(start)
-        let distance = hypot(p.x - target.x, p.y - target.y)
 
-        guard distance <= 40 else {
-            showHint("从符头的光点起笔")
+        // 只要落在符盘里就允许起笔：手指/鼠标都不必精准点到光点。
+        // 起笔偏了不是"不能画"，而是会被判低分——不能让用户第一下就没反应。
+        guard let pf = plateFrame else { return }
+        let plateRect = CGRect(
+            x: pf.centerX - pf.size / 2,
+            y: pf.centerY - pf.size / 2,
+            width: pf.size,
+            height: pf.size
+        ).insetBy(dx: -28, dy: -28)
+        guard plateRect.contains(p) else {
+            showHint("在符盘范围内起笔")
             return
+        }
+
+        // 离光点太远时提醒一次，但不拦着
+        if hypot(p.x - target.x, p.y - target.y) > pf.size * 0.28 {
+            showHint("从光点起笔，判分会更高")
         }
 
         recorder.begin(Vec2(x: Double(p.x), y: Double(p.y)), timestamp: touch.timestamp)

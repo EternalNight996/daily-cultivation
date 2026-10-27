@@ -79,6 +79,29 @@ final class AppModel {
         }
     }
 
+    /// 判定三档：宽松 / 标准 / 严格
+    func applyJudgeLevel(_ level: Int) {
+        var config = MatchConfig()
+        switch level {
+        case 0:
+            config.passThreshold = 0.66
+            config.assistedThreshold = 0.58
+            config.helpThreshold = 0.48
+        case 2:
+            config.passThreshold = 0.78
+            config.assistedThreshold = 0.70
+            config.helpThreshold = 0.60
+        default:
+            break
+        }
+        ritual.config = config
+    }
+
+    func resetToday() {
+        store.resetForDebug()
+        ritual.refreshSnapshot()
+    }
+
     func drawDemoStroke() {
         NotificationCenter.default.post(name: .demoStroke, object: nil)
     }

@@ -9,6 +9,11 @@ struct RootView: View {
     private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
     private let paper = Color(red: 0.957, green: 0.910, blue: 0.843)
 
+    @AppStorage("dc.sound") private var soundOn = true
+    @AppStorage("dc.haptics") private var hapticsOn = true
+    @AppStorage("dc.judge") private var judgeLevel = 1
+    @State private var showSettings = false
+
     var body: some View {
         ZStack(alignment: .top) {
             InkBackground()
@@ -56,6 +61,15 @@ struct RootView: View {
             model.bootstrap()
         }
         .onChange(of: scenePhase) { _, phase in model.handleScenePhase(phase) }
+        .onAppear {
+            AudioPool.shared.setEnabled(soundOn)
+            Haptics.isEnabled = hapticsOn
+            model.applyJudgeLevel(judgeLevel)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+                .presentationDetents([.medium, .large])
+        }
     }
 
     // MARK: - 顶部
@@ -171,6 +185,7 @@ struct RootView: View {
                         circleButton("留影", primary: false) { model.capturePhoto() }
                     }
                     circleButton("示范", primary: false) { model.drawDemoStroke() }
+                    circleButton("设置", primary: false) { showSettings = true }
                 }
                 .padding(.trailing, 18)
                 .padding(.bottom, 96)
@@ -190,3 +205,81 @@ struct RootView: View {
         }
     }
 }
+
+// MARK: - 设置
+
+struct SettingsView: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
+
+    @AppStorage("dc.sound") private var soundOn = true
+    @AppStorage("dc.haptics") private var hapticsOn = true
+    @AppStorage("dc.judge") private var judgeLevel = 1
+    @State private var confirmReset = false
+
+    private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
+    private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
+    private let paper = Color(red: 0.957, green: 0.910, blue: 0.843)
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Toggle("音效", isOn: $soundOn)
+                    Toggle("触感", isOn: $hapticsOn)
+                } header: {
+                    Text("手感")
+                } footer: {
+                    Text("关掉后画符仍然可判，只是没有声音与震动。")
+                }
+
+                Section {
+                    Picker("判定", selection: $judgeLevel) {
+                        Text("宽松").tag(0)
+                        Text("标准").tag(1)
+                        Text("严格").tag(2)
+                    }
+                    .pickerStyle(.segmented)
+                } header: {
+                    Text("判定")
+                } footer: {
+                    Text("宽松适合第一次玩；严格会更看重笔形与收笔位置。")
+                }
+
+                Section("数据") {
+                    Button("重置今日修行", role: .destructive) { confirmReset = true }
+                    LabeledContent("连续天数", value: "\(model.ritual.snapshot.streak) 天")
+                    LabeledContent("今日灵气", value: "\(model.ritual.snapshot.earnedToday)")
+                }
+
+                Section {
+                    LabeledContent("版本", value: "1.0.0 (1)")
+                    LabeledContent("数据", value: "仅存本机")
+                    Text("V1 不联网、不上传、无账号。修行记录只保存在这台设备上。")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("关于")
+                }
+            }
+            .navigationTitle("设置")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("完成") { dismiss() }
+                }
+            }
+            .onChange(of: soundOn) { _, value in AudioPool.shared.setEnabled(value) }
+            .onChange(of: hapticsOn) { _, value in Haptics.isEnabled = value }
+            .onChange(of: judgeLevel) { _, value in model.applyJudgeLevel(value) }
+            .confirmationDialog("重置今日记录？", isPresented: $confirmReset, titleVisibility: .visible) {
+                Button("重置", role: .destructive) { model.resetToday() }
+                Button("取消", role: .cancel) {}
+            } message: {
+                Text("只清空今天的灵气与笔数，连续天数保留。")
+            }
+        }
+        .tint(cinnabar)
+    }
+}
+
