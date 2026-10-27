@@ -197,7 +197,7 @@ final class TalismanCanvasView: UIView {
 
     private func setupHint() {
         hintLabel.font = .systemFont(ofSize: 12.5, weight: .regular)
-        hintLabel.textColor = UIColor(white: 0.93, alpha: 0.55)
+        hintLabel.textColor = ink.withAlphaComponent(0.62)
         hintLabel.textAlignment = .center
         hintLabel.alpha = 0
         hintLabel.isUserInteractionEnabled = false
