@@ -121,14 +121,14 @@ final class TalismanCanvasView: UIView {
         }
         layer.addSublayer(particles)
 
-        faintLayer.strokeColor = ink.withAlphaComponent(0.16).cgColor
+        faintLayer.strokeColor = ink.withAlphaComponent(0.22).cgColor
         faintLayer.lineWidth = 1.6
         faintLayer.lineDashPattern = [5, 10]
 
         doneLayer.strokeColor = ink.withAlphaComponent(0.72).cgColor
         doneLayer.lineWidth = 2.2
 
-        guideLayer.strokeColor = ink.withAlphaComponent(0.42).cgColor
+        guideLayer.strokeColor = ink.withAlphaComponent(0.52).cgColor
         guideLayer.lineWidth = 2
         guideLayer.lineDashPattern = [6, 9]
         let flow = CABasicAnimation(keyPath: "lineDashPhase")

@@ -16,8 +16,6 @@ struct RootView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            InkBackground(shichen: model.shichen)
-
             if model.cameraEnabled && model.permission == .authorized && !model.inkOnly {
                 CameraPreview(renderer: model.renderer)
                     .ignoresSafeArea()
@@ -25,6 +23,16 @@ struct RootView: View {
             }
 
             if model.permission == .authorized || model.inkOnly {
+                GeometryReader { geo in
+                    RadialGradient(colors: [Color.white.opacity(0.55), Color.white.opacity(0.0)],
+                                   center: .center, startRadius: 24, endRadius: 210)
+                        .frame(width: geo.size.width * 1.15, height: geo.size.width * 1.15)
+                        .position(x: geo.size.width / 2, y: geo.size.height * 0.47)
+                        .blur(radius: 22)
+                        .allowsHitTesting(false)
+                }
+                .ignoresSafeArea()
+
                 TalismanCanvas(session: model.ritual,
                                strokeIndex: model.ritual.strokeIndex,
                                phase: model.ritual.phase)
@@ -53,6 +61,7 @@ struct RootView: View {
                 .zIndex(20)
             }
         }
+        .background { InkBackground(shichen: model.shichen) }
         .animation(.easeInOut(duration: 0.35), value: model.permission)
         .animation(.easeInOut(duration: 0.35), value: model.cameraEnabled)
         .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.ritual.settlement)
