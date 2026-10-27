@@ -14,7 +14,7 @@ struct PermissionView: View {
                 .tracking(8)
                 .foregroundStyle(.white.opacity(0.92))
 
-            Text(body)
+            Text(bodyText)
                 .font(.system(size: 13))
                 .lineSpacing(7)
                 .multilineTextAlignment(.center)
@@ -66,7 +66,7 @@ struct PermissionView: View {
         }
     }
 
-    private var body: String {
+    private var bodyText: String {
         switch model.permission {
         case .notDetermined:
             return "施法需要把眼前的景象化作洞府。\n先开灵镜，再落笔成符。"
