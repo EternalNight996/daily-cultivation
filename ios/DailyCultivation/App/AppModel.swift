@@ -30,6 +30,10 @@ final class AppModel {
     }
 
     func bootstrap() {
+        // 模拟器没有摄像头：直接进水墨兜底，否则会看到一块纯黑
+        if AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) == nil {
+            inkOnly = true
+        }
         AudioPool.shared.prepare()
         shichen = Shichen.current()
         renderer.setShichen(shichen)

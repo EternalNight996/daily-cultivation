@@ -14,7 +14,6 @@ jobs:
 
       - name: Show toolchain
         run: |
-          ls /Applications | grep -i xcode || true
           sudo xcode-select -s /Applications/Xcode.app
           xcodebuild -version
           swift --version
@@ -44,7 +43,23 @@ jobs:
           set -o pipefail
           swift test 2>&1 | tee test.log
 
-      - name: Upload logs
+      - name: Run in simulator and screenshot
+        continue-on-error: true
+        working-directory: ios
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
+          echo "device=$DEVICE"
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl bootstatus "$DEVICE" -b || true
+          APP=$(find build/Build/Products -name "DailyCultivation.app" -maxdepth 3 | head -1)
+          echo "app=$APP"
+          xcrun simctl install "$DEVICE" "$APP"
+          xcrun simctl launch "$DEVICE" com.dailycultivation.app || true
+          sleep 6
+          xcrun simctl io "$DEVICE" screenshot shot.png
+          ls -la shot.png
+
+      - name: Upload logs and screenshot
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -52,3 +67,4 @@ jobs:
           path: |
             ios/build.log
             ios/TalismanKit/test.log
+            ios/shot.png
