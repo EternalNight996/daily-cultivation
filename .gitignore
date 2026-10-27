@@ -1,5 +1,6 @@
 # 只把"能编译的东西"推到远端；策划/合规/财务文档留在本地
 docs/
+.agent-teams/
 *.zip
 build/
 DerivedData/
