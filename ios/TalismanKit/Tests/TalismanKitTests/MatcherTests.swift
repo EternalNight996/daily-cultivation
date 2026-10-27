@@ -44,7 +44,8 @@ final class MatcherTests: XCTestCase {
         let reversed = Array(t.reversed())
         let s = Matcher.score(user: dense(reversed), template: t, config: config)
         XCTAssertLessThan(s.total, config.passThreshold)
-        XCTAssertGreaterThan(s.total, config.helpThreshold)
+        XCTAssertGreaterThan(s.total, config.helpThreshold,
+                             "诊断 fr=\(s.frechet) shape=\(s.shape) tan=\(s.tangent) ends=\(s.endpoints) total=\(s.total)")
     }
 
     func testTranslationFourPercentStillPasses() {
