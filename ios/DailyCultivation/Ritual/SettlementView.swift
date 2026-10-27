@@ -133,6 +133,17 @@ struct ShareCard: View {
             .frame(width: cardSize.width, height: cardSize.height)
             .clipped()
 
+            // 纸纹太花，压一层由白到透明的渐变，字才压得住
+            LinearGradient(stops: [
+                .init(color: .white.opacity(0.60), location: 0.00),
+                .init(color: .white.opacity(0.18), location: 0.14),
+                .init(color: .white.opacity(0.00), location: 0.34),
+                .init(color: .white.opacity(0.00), location: 0.62),
+                .init(color: .white.opacity(0.30), location: 0.86),
+                .init(color: .white.opacity(0.55), location: 1.00)
+            ], startPoint: .top, endPoint: .bottom)
+            .frame(width: cardSize.width, height: cardSize.height)
+
             VStack(spacing: 0) {
                 Text("每日修仙")
                     .font(.custom("Songti SC", size: 40))
@@ -142,8 +153,8 @@ struct ShareCard: View {
                 Text(date, format: .dateTime.year().month().day().hour().minute())
                     .font(.system(size: 16))
                     .tracking(3)
-                    .foregroundStyle(ink.opacity(0.45))
-                    .padding(.top, 10)
+                    .foregroundStyle(ink.opacity(0.55))
+                    .padding(.top, 20)
 
                 Spacer(minLength: 0)
 
@@ -157,7 +168,7 @@ struct ShareCard: View {
                         Text("今日灵气")
                             .font(.system(size: 14))
                             .tracking(3)
-                            .foregroundStyle(ink.opacity(0.45))
+                            .foregroundStyle(ink.opacity(0.6))
                         Text("+\(qi)")
                             .font(.system(size: 54, weight: .light))
                             .monospacedDigit()
@@ -165,7 +176,7 @@ struct ShareCard: View {
                         Text("连续 \(streak) 天")
                             .font(.system(size: 13))
                             .tracking(2)
-                            .foregroundStyle(ink.opacity(0.4))
+                            .foregroundStyle(ink.opacity(0.55))
                     }
                     Spacer()
                     if UIImage(named: "seal_chi") != nil {
