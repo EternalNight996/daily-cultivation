@@ -69,6 +69,26 @@ jobs:
           xcrun simctl io "$DEVICE" screenshot shot.png
           ls -la shot.png
 
+      # 真机自测用：产物不签名，Windows 上用 Sideloadly 以免费 Apple ID 重签后装进 iPhone
+      - name: Build unsigned IPA (device)
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild             -project DailyCultivation.xcodeproj             -scheme DailyCultivation             -configuration Release             -sdk iphoneos             -destination 'generic/platform=iOS'             -derivedDataPath build-device             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""             build 2>&1 | tee build-device.log
+          rm -rf Payload DailyCultivation-unsigned.ipa
+          mkdir Payload
+          cp -R build-device/Build/Products/Release-iphoneos/DailyCultivation.app Payload/
+          zip -qry DailyCultivation-unsigned.ipa Payload
+          ls -la DailyCultivation-unsigned.ipa
+
+      - name: Upload unsigned IPA
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipa
+          path: ios/DailyCultivation-unsigned.ipa
+
       - name: Export generated project
         working-directory: ios
         run: |
