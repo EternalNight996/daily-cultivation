@@ -107,6 +107,7 @@ jobs:
           capture shot.png
           capture shot-resting.png -dcPreviewState resting
           capture shot-history.png -dcPreviewState history
+          capture shot-share.png -dcPreviewState share
           ls -la shot*.png
 
       - name: Export generated project
@@ -127,4 +128,5 @@ jobs:
             ios/shot.png
             ios/shot-resting.png
             ios/shot-history.png
+            ios/shot-share.png
             ios/DailyCultivation.xcodeproj.zip

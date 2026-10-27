@@ -15,7 +15,7 @@ struct RootView: View {
     @State private var activeSheet: ActiveSheet?
 
     private enum ActiveSheet: String, Identifiable {
-        case settings, history
+        case settings, history, share
         var id: String { rawValue }
     }
 
@@ -60,7 +60,8 @@ struct RootView: View {
                     Spacer()
                     SettlementView(settlement: settlement,
                                    streakDays: model.ritual.streakDays,
-                                   onAgain: { model.ritual.reset() })
+                                   onAgain: { model.ritual.reset() },
+                                   onShare: { activeSheet = .share })
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .zIndex(20)
@@ -94,6 +95,10 @@ struct RootView: View {
                     .presentationDetents([.medium, .large])
             case .history:
                 NavigationStack { HistoryView() }
+            case .share:
+                ShareCardSheet(qi: model.ritual.settlement?.total ?? 128,
+                               streak: model.ritual.streakDays,
+                               talisman: model.ritual.talisman)
             }
         }
     }
@@ -210,6 +215,8 @@ struct RootView: View {
         case "history":
             model.seedPreviewRecords()
             activeSheet = .history
+        case "share":
+            activeSheet = .share
         default:
             break
         }

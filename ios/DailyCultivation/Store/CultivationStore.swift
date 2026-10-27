@@ -153,6 +153,21 @@ final class CultivationStore {
             session.shichenRaw = order[index % order.count].rawValue
             session.dayKey = calendar.dateKey(for: date)
         }
+
+        // 汇总与今日也补上，否则截图里三行数字全是 0
+        let todayKey = calendar.dateKey(for: Date())
+        let day = fetchDay(todayKey) ?? CultivationDay(context: context)
+        if day.dayKey == nil { day.dayKey = todayKey }
+        day.qi = 400
+        day.casts = 3
+        day.streakAtEnd = 5
+        day.updatedAt = Date()
+
+        defaults.set(5, forKey: Key.streak)
+        defaults.set(5, forKey: Key.longest)
+        defaults.set(700, forKey: Key.totalXp)
+        defaults.set(5, forKey: Key.totalCasts)
+        defaults.set(Date(), forKey: Key.lastActive)
         save()
     }
 #endif
