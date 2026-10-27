@@ -14,6 +14,7 @@
 		1DCD373E5B207007E4F54819 /* SettlementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D218F7AE049B54EF7DB1F43D /* SettlementView.swift */; };
 		2719C3FDD130669FE2FD737A /* Shichen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21C47D446DE155BF700A5CC /* Shichen.swift */; };
 		34781110B7EC2BCA21E19AB4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0AFBB82D0CA69A1BFD9C76E /* RootView.swift */; };
+		37CFB767505F24B9EFB7353F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28B15E3E0787F219B694B868 /* Assets.xcassets */; };
 		48F72EE27C9086DB51F752CD /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DDD39D24513C6B3A65E5C1 /* CameraPreview.swift */; };
 		5245BCE041227573087E8299 /* DailyCultivationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564C0080A18ECAECF06636BE /* DailyCultivationApp.swift */; };
 		525F77F047A1834B0CF810B0 /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA286F5EA381107EC8BEE540 /* AppLog.swift */; };
@@ -47,6 +48,7 @@
 		1EDEC2EFFCC9532E353E0237 /* CameraPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
 		213FDEBED748785266380A5C /* complete.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = complete.wav; sourceTree = "<group>"; };
 		2438A48FBE582E647FED952F /* CultivationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CultivationStore.swift; sourceTree = "<group>"; };
+		28B15E3E0787F219B694B868 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		36DDD39D24513C6B3A65E5C1 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		42D1ACB953C92CAD47EF9152 /* StrokeRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeRecorder.swift; sourceTree = "<group>"; };
 		4680C8845A1B0F0A2E977480 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				D2C619F76A6E236BE506EB4B /* Audio */,
+				28B15E3E0787F219B694B868 /* Assets.xcassets */,
 				5AEAC3A72A60679CD4B5C9C3 /* Info.plist */,
 				9F341890A5FAD48F7D417FDE /* PrivacyInfo.xcprivacy */,
 			);
@@ -299,6 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37CFB767505F24B9EFB7353F /* Assets.xcassets in Resources */,
 				032287A386E926A313E00C67 /* PrivacyInfo.xcprivacy in Resources */,
 				F0F0F61C31DE3DEC7BEC9699 /* complete.wav in Resources */,
 				0D68DD037A7F4CB2395924CA /* settle.wav in Resources */,
@@ -479,6 +483,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = DailyCultivation/Resources/Info.plist;
@@ -498,6 +503,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = DailyCultivation/Resources/Info.plist;
