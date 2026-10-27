@@ -130,6 +130,14 @@ final class RitualSession {
         phase = isDailyLimitReached ? .resting : .drawing
     }
 
+#if DEBUG
+    /// 仅用于 CI 截图：强制进入"今日圆满"态
+    func forceRestingForPreview() {
+        settlement = nil
+        phase = .resting
+    }
+#endif
+
     /// 冷启动时调用：今天已满就直接进"圆满"态
     func syncDailyLimit() {
         guard settlement == nil else { return }

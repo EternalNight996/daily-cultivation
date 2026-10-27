@@ -113,6 +113,20 @@ final class AppModel {
         records = store.recentRecords()
     }
 
+#if DEBUG
+    /// CI 截图用：-dcPreviewState resting|history
+    var previewState: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: "-dcPreviewState"), index + 1 < args.count else { return nil }
+        return args[index + 1]
+    }
+
+    func seedPreviewRecords() {
+        store.seedPreviewSessions()
+        records = store.recentRecords()
+    }
+#endif
+
     func drawDemoStroke() {
         NotificationCenter.default.post(name: .demoStroke, object: nil)
     }

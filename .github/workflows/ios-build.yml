@@ -93,10 +93,21 @@ jobs:
           APP=$(find build/Build/Products -name "DailyCultivation.app" -maxdepth 3 | head -1)
           echo "app=$APP"
           xcrun simctl install "$DEVICE" "$APP"
-          xcrun simctl launch "$DEVICE" com.dailycultivation.app || true
-          sleep 6
-          xcrun simctl io "$DEVICE" screenshot shot.png
-          ls -la shot.png
+
+          # 三种状态各截一张：默认 / 今日圆满 / 修行录
+          capture() {
+            local name="$1"; shift
+            xcrun simctl terminate "$DEVICE" com.dailycultivation.app >/dev/null 2>&1 || true
+            xcrun simctl launch "$DEVICE" com.dailycultivation.app "$@" >/dev/null 2>&1 || true
+            sleep 6
+            xcrun simctl io "$DEVICE" screenshot "$name"
+            echo "captured $name"
+          }
+
+          capture shot.png
+          capture shot-resting.png -dcPreviewState resting
+          capture shot-history.png -dcPreviewState history
+          ls -la shot*.png
 
       - name: Export generated project
         working-directory: ios
@@ -114,4 +125,6 @@ jobs:
             ios/build-device.log
             ios/TalismanKit/test.log
             ios/shot.png
+            ios/shot-resting.png
+            ios/shot-history.png
             ios/DailyCultivation.xcodeproj.zip

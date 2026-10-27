@@ -138,6 +138,25 @@ final class CultivationStore {
         return snapshot(now: date)
     }
 
+#if DEBUG
+    /// 仅用于 CI 截图：塞几条修行录，验证列表样式
+    func seedPreviewSessions() {
+        let order: [Shichen] = [.wu, .mao, .zi, .you]
+        for index in 0..<5 {
+            let date = Date().addingTimeInterval(-Double(index) * 3600 * 3)
+            let session = CultivationSession(context: context)
+            session.id = UUID()
+            session.startedAt = date
+            session.qi = Int32(96 + index * 17)
+            session.score = 0.86 + Double(index) * 0.02
+            session.strokeCount = 3
+            session.shichenRaw = order[index % order.count].rawValue
+            session.dayKey = calendar.dateKey(for: date)
+        }
+        save()
+    }
+#endif
+
     func resetForDebug() {
         let entities = ["CultivationDay", "CultivationSession", "PetState"]
         for name in entities {

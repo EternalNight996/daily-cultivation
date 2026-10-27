@@ -79,6 +79,7 @@ struct RootView: View {
         .task {
             Haptics.shared.prepare()
             model.bootstrap()
+            applyPreviewStateIfNeeded()
         }
         .onChange(of: scenePhase) { _, phase in model.handleScenePhase(phase) }
         .onAppear {
@@ -199,6 +200,20 @@ struct RootView: View {
         if model.ritual.phase == .settling { return .resonate }
         if model.ritual.lastScore != nil { return .cast }
         return .idle
+    }
+
+    private func applyPreviewStateIfNeeded() {
+#if DEBUG
+        switch model.previewState {
+        case "resting":
+            model.ritual.forceRestingForPreview()
+        case "history":
+            model.seedPreviewRecords()
+            activeSheet = .history
+        default:
+            break
+        }
+#endif
     }
 
     // MARK: - 今日圆满
