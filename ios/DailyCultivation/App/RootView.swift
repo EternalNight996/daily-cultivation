@@ -124,6 +124,11 @@ struct RootView: View {
                         }
                     }
                     .frame(width: 104, height: 2)
+
+                    Text("\(model.ritual.talisman.name) · \(model.ritual.talisman.strokes.count) 笔")
+                        .font(.custom("Songti SC", size: 10))
+                        .tracking(2)
+                        .foregroundStyle(ink.opacity(0.4))
                 }
             }
         }

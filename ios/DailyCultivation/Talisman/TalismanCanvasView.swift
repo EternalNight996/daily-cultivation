@@ -13,7 +13,6 @@ final class TalismanCanvasView: UIView {
     private let trailLayer = CAShapeLayer()
     private let dot = UIView()
     private let hintLabel = UILabel()
-    private let plateNameLabel = UILabel()
     private let sealView = UIView()
     private let sealLabel = UILabel()
     private let inkLayer = CAGradientLayer()
@@ -97,7 +96,6 @@ final class TalismanCanvasView: UIView {
             particles.configure(center: center, radius: plateFrame.size / 2)
             inkLayer.frame = CGRect(x: center.x - 180, y: center.y - 180, width: 360, height: 360)
             sealView.center = CGPoint(x: center.x + 48, y: center.y + 72)
-            plateNameLabel.frame = CGRect(x: 0, y: center.y + 132, width: bounds.width, height: 18)
         }
         refresh()
     }
@@ -108,10 +106,6 @@ final class TalismanCanvasView: UIView {
         isUserInteractionEnabled = session.phase == .drawing
         drawStrokes(plateFrame)
         layoutDot(plateFrame)
-        plateNameLabel.attributedText = NSAttributedString(
-            string: "\(session.talisman.name) · \(session.talisman.strokes.count) 笔",
-            attributes: [.kern: 3]
-        )
         if session.phase == .drawing { clearDecor() }
         if !isDrawing { trailLayer.path = nil }
     }
@@ -199,11 +193,6 @@ final class TalismanCanvasView: UIView {
         sealLabel.frame = sealView.bounds
         sealView.addSubview(sealLabel)
 
-        plateNameLabel.textAlignment = .center
-        plateNameLabel.font = UIFont(name: "Songti SC", size: 12) ?? .systemFont(ofSize: 12)
-        plateNameLabel.textColor = ink.withAlphaComponent(0.42)
-        plateNameLabel.isUserInteractionEnabled = false
-        addSubview(plateNameLabel)
     }
 
     private func setupHint() {
