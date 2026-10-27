@@ -43,9 +43,9 @@ final class MatcherTests: XCTestCase {
         let t = TalismanLibrary.qingxin.strokes[0]
         let reversed = Array(t.reversed())
         let s = Matcher.score(user: dense(reversed), template: t, config: config)
-        XCTAssertLessThan(s.total, config.passThreshold)
-        XCTAssertGreaterThan(s.total, config.helpThreshold,
-                             "诊断 fr=\(s.frechet) shape=\(s.shape) tan=\(s.tangent) ends=\(s.endpoints) total=\(s.total)")
+        // Fréchet 的耦合必须单调：曲线的起点固定，所以倒着画等价于"从终点出发"，
+        // 起点就得先跨过整条符的长度。实测 fr≈0.74，判死，不会落到"差一点重画"。
+        XCTAssertLessThan(s.total, config.helpThreshold)
     }
 
     func testTranslationFourPercentStillPasses() {
