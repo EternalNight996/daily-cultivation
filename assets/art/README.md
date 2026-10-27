@@ -61,7 +61,10 @@ assets/art/
 | 洞府绘景 ×4 | `01-backgrounds/bg_{zi,mao,wu,you}@3x.jpg` | 2026-10-27 |
 | 符纸 ×3 | `02-paper/paper_{new,worn,burnt}@2x.jpg` | 2026-10-27 |
 | 笔锋 ×4 | `03-brush/brush_{start,body,end,corner}_01.png` | 2026-10-27 |
-| 朱砂印 ×1 | `04-seals/seal_he.png` | 2026-10-27 |
+| 朱砂印 ×2 | `04-seals/seal_he.png`、`seal_chi.png`（符成用） | 2026-10-27 |
+| 笔锋补 2 个 | `03-brush/brush_body_02.png`、`brush_end_02.png` | 2026-10-27 |
+| 灵兽三态 | `05-pet/pet_{idle,cast,resonate}_00.png`（+idle/cast 各 1 个备选） | 2026-10-27 |
+| 备用背景 | `01-backgrounds/bg_chang@3x.jpg`（无常/兜底） | 2026-10-27 |
 | 占位音效 | `ios/…/Resources/Audio/*.wav` | 2026-10-26 |
 
 ## 合规

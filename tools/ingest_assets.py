@@ -15,27 +15,41 @@ SRC = os.path.join(ROOT, "assets")
 ART = os.path.join(SRC, "art")
 
 MAPPING = {
-    # 背景：竖向 2:3 → 裁成 9:16 → 1170x2532 JPEG
-    # 按画面判断：07-07-45 暖白天光=午；07-09-13 深蓝月夜=子；
-    # 07-09-33 淡青晨雾=卯；07-09-53 赭色黄昏=酉
+    # ===== 第一批：背景（2:3 → 9:16）=====
     "Vertical_9_16_Chinese_ink_wash_2026-10-27T07-07-45.png": ("background", "bg_wu@3x.jpg"),
     "Vertical_9_16_Chinese_ink_wash_2026-10-27T07-09-13.png": ("background", "bg_zi@3x.jpg"),
     "Vertical_9_16_Chinese_ink_wash_2026-10-27T07-09-33.png": ("background", "bg_mao@3x.jpg"),
     "Vertical_9_16_Chinese_ink_wash_2026-10-27T07-09-53.png": ("background", "bg_you@3x.jpg"),
-    # 纸：纹理，不带 alpha
+    # 备用的第五张（无常/任意时辰兜底）
+    "Chinese_ink_wash_painting__lig_2026-10-27T07-32-29.png": ("background", "bg_chang@3x.jpg"),
+
+    # ===== 纸纹 =====
     "Top_down_high_detail_macro_pho_2026-10-27T07-10-31.png": ("paper", "paper_new@2x.jpg"),
     "Top_down_high_detail_macro_pho_2026-10-27T07-10-46.png": ("paper", "paper_worn@2x.jpg"),
     "Top_down_high_detail_macro_pho_2026-10-27T07-11-03.png": ("paper", "paper_burnt@2x.jpg"),
-    # 笔锋：白底 → alpha
-    "A_single_Chinese_calligraphy_b_2026-10-27T07-11-58.png": ("brush", "brush_start_01.png"),
-    "A_single_Chinese_calligraphy_b_2026-10-27T07-12-22.png": ("brush", "brush_end_01.png"),
-    "A_single_Chinese_calligraphy_b_2026-10-27T07-12-39.png": ("brush", "brush_corner_01.png"),
-    "A_single_horizontal_Chinese_ca_2026-10-27T07-12-08.png": ("brush", "brush_body_01.png"),
-    # 印章：白底 → alpha
+
+    # ===== 笔锋（白底 → 黑墨 alpha）=====
+    "A_single_Chinese_calligraphy_b_2026-10-27T07-11-58.png": ("ink", "brush_start_01.png"),
+    "A_single_Chinese_calligraphy_b_2026-10-27T07-12-22.png": ("ink", "brush_end_01.png"),
+    "A_single_Chinese_calligraphy_b_2026-10-27T07-12-39.png": ("ink", "brush_corner_01.png"),
+    "A_single_horizontal_Chinese_ca_2026-10-27T07-12-08.png": ("ink", "brush_body_01.png"),
+    "Single_Chinese_calligraphy_bru_2026-10-27T07-32-44.png": ("ink", "brush_body_02.png"),
+    "Single_Chinese_calligraphy_bru_2026-10-27T07-33-03.png": ("ink", "brush_end_02.png"),
+
+    # ===== 印章（保留朱砂色）=====
     "A_single_square_traditional_Ch_2026-10-27T07-12-51.png": ("seal", "seal_he.png"),
+    "A_single_square_traditional_Ch_2026-10-27T07-30-32.png": ("seal", "seal_chi.png"),
+
+    # ===== 灵兽三态（白底 → 黑墨 alpha）=====
+    "A_small_spirit_fox_like_creatu_2026-10-27T07-33-19.png": ("ink", "pet_idle_00.png"),
+    "Keep_the_same_small_spirit_fox_2026-10-27T07-33-44.png": ("ink", "pet_idle_01.png"),
+    "Keep_the_same_small_spirit_fox_2026-10-27T07-33-57.png": ("ink", "pet_resonate_00.png"),
+    "Keep_the_same_dark_ink_wash_sp_2026-10-27T07-34-27.png": ("ink", "pet_cast_00.png"),
+    "A_small_spirit_fox_like_creatu_2026-10-27T07-34-57.png": ("ink", "pet_cast_01.png"),
 }
 
-DIRS = {"background": "01-backgrounds", "paper": "02-paper", "brush": "03-brush", "seal": "04-seals"}
+DIRS = {"background": "01-backgrounds", "paper": "02-paper",
+        "ink": "03-brush", "seal": "04-seals", "pet": "05-pet"}
 
 def to_rgba_from_white(im, keep_color=True):
     """白底转透明：alpha = 255 - min(R,G,B)；彩色保留原色。"""
@@ -91,10 +105,10 @@ def do_paper(path, name):
     im.save(dst, "JPEG", quality=90, optimize=True)
     return dst
 
-def do_cutout(path, name, folder):
+def do_cutout(path, name, folder, keep_color=True):
     im = Image.open(path)
-    out = pad_square(to_rgba_from_white(im), 512)
-    dst = os.path.join(ART, DIRS[folder], name)
+    out = pad_square(to_rgba_from_white(im, keep_color=keep_color), 512)
+    dst = os.path.join(ART, folder, name)
     out.save(dst, "PNG", optimize=True)
     return dst
 
@@ -109,8 +123,11 @@ def main():
             dst = do_background(path, name)
         elif kind == "paper":
             dst = do_paper(path, name)
+        elif kind == "ink":
+            folder = "05-pet" if name.startswith("pet_") else "03-brush"
+            dst = do_cutout(path, name, folder, keep_color=False)
         else:
-            dst = do_cutout(path, name, kind)
+            dst = do_cutout(path, name, "04-seals", keep_color=True)
         kb = os.path.getsize(dst)//1024
         results.append((name, kb))
         print(f"✅ {name:22s} {kb:5d}KB  ← {src[:34]}")

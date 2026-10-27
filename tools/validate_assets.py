@@ -17,7 +17,7 @@ ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 
 RULES = [
     # dir, name regex, min width, min height, need alpha, max KB
-    ("01-backgrounds", r"^bg_(zi|mao|wu|you)@3x\.(jpg|png)$", 1170, 2532, False, 900),
+    ("01-backgrounds", r"^bg_(zi|mao|wu|you|chang)@3x\.(jpg|png)$", 1170, 2532, False, 900),
     ("02-paper",       r"^paper_(new|worn|burnt)@2x\.(jpg|png)$", 2048, 2048, False, 900),
     ("03-brush",       r"^brush_(start|body|end|corner)_\d{2}\.png$", 256, 256, True, 300),
     ("04-seals",       r"^seal_(chi|mei|cheng|jing|he)\.png$", 256, 256, True, 300),
