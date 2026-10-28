@@ -215,11 +215,11 @@ struct RootView: View {
     }
 
     private var shouldShowOnboarding: Bool {
-        if !onboarded { return true }
 #if DEBUG
-        if model.previewState == "onboarding" { return true }
+        // 截图模式下只有 onboarding 这一态显示引导，其余状态一律当它已经看过
+        if let state = model.previewState { return state == "onboarding" }
 #endif
-        return false
+        return !onboarded
     }
 
     private func applyPreviewStateIfNeeded() {
