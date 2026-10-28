@@ -85,7 +85,7 @@ struct RootView: View {
             }
 
             if shouldShowOnboarding {
-                OnboardingView { onboarded = true }
+                OnboardingView(initialStep: previewOnboardingStep) { onboarded = true }
                     .transition(.opacity)
                     .zIndex(30)
             }
@@ -224,6 +224,19 @@ struct RootView: View {
         return .idle
     }
 
+    /// 截图用：onboarding2 / onboarding3 直接跳到第 2、3 页
+    private var previewOnboardingStep: Int {
+#if DEBUG
+        switch model.previewState {
+        case "onboarding2": return 1
+        case "onboarding3": return 2
+        default: return 0
+        }
+#else
+        return 0
+#endif
+    }
+
     /// 截图模式下让升级弹层停住，否则 3 秒后自动消失，截不到
     private var previewHoldsUpgrade: Bool {
 #if DEBUG
@@ -236,7 +249,7 @@ struct RootView: View {
     private var shouldShowOnboarding: Bool {
 #if DEBUG
         // 截图模式下只有 onboarding 这一态显示引导，其余状态一律当它已经看过
-        if let state = model.previewState { return state == "onboarding" }
+        if let state = model.previewState { return state.hasPrefix("onboarding") }
 #endif
         return !onboarded
     }
@@ -254,6 +267,8 @@ struct RootView: View {
         case "settings":
             activeSheet = .settings
         case "idle":
+            break
+        case "onboarding", "onboarding2", "onboarding3":
             break
         case "upgrade":
             model.ritual.forceTitleUpgradeForPreview()
@@ -530,7 +545,12 @@ struct HistoryView: View {
 struct OnboardingView: View {
     let onFinish: () -> Void
 
-    @State private var step = 0
+    @State private var step: Int
+
+    init(initialStep: Int = 0, onFinish: @escaping () -> Void) {
+        self.onFinish = onFinish
+        _step = State(initialValue: initialStep)
+    }
 
     private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
     private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)

@@ -127,6 +127,8 @@ jobs:
 
           capture shot.png -dcPreviewState idle
           capture shot-onboarding.png -dcPreviewState onboarding
+          capture shot-onboarding2.png -dcPreviewState onboarding2
+          capture shot-onboarding3.png -dcPreviewState onboarding3
           capture shot-upgrade.png -dcPreviewState upgrade
           capture shot-settings.png -dcPreviewState settings
           capture shot-settle.png -dcPreviewState settle
