@@ -100,10 +100,10 @@ public enum TalismanLibrary {
     /// 这样凌晨 3 点画的仍是"昨天"的符。
     public static func daily(for date: Date = Date(), calendar: Calendar = .current) -> Talisman {
         let shifted = calendar.date(byAdding: .hour, value: -4, to: date) ?? date
-        guard let day = calendar.ordinality(of: .day, in: .era, for: shifted), !all.isEmpty else {
-            return qingxin
-        }
-        return all[abs(day) % all.count]
+        let parts = calendar.dateComponents([.year, .month, .day], from: shifted)
+        let index = (parts.year ?? 2000) * 372 + (parts.month ?? 1) * 31 + (parts.day ?? 1)
+        guard !all.isEmpty else { return qingxin }
+        return all[abs(index) % all.count]
     }
 
     private static func p(_ x: Double, _ y: Double) -> Vec2 { Vec2(x: x, y: y) }
