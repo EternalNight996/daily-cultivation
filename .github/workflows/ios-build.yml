@@ -47,6 +47,17 @@ jobs:
           echo "SIM_DEVICE=$DEVICE" >> $GITHUB_ENV
           xcrun simctl boot "$DEVICE" || true
 
+      # 复用上一次的 DerivedData：只重编改过的文件，冷构建 4.7 分钟 → 1–2 分钟
+      - name: Restore build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/build
+            ios/TalismanKit/.build
+          key: ddb-${{ github.run_id }}
+          restore-keys: |
+            ddb-
+
       - name: Build for simulator (no signing)
         working-directory: ios
         run: |
