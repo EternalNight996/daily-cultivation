@@ -115,6 +115,10 @@ final class AppModel {
     }
 
     func loadRecords() {
+#if DEBUG
+        // 截图态用固定假数据，避免依赖 CoreData 的实际写入结果
+        if previewState == "history" { return }
+#endif
         records = store.recentRecords()
     }
 
@@ -127,8 +131,17 @@ final class AppModel {
     }
 
     func seedPreviewRecords() {
-        store.seedPreviewSessions()
-        records = store.recentRecords()
+        let order: [Shichen] = [.wu, .mao, .zi, .you]
+        records = (0..<5).map { index in
+            CultivationStore.Record(
+                id: UUID(),
+                date: Date().addingTimeInterval(-Double(index) * 3 * 3600),
+                qi: 96 + index * 17,
+                score: 0.86 + Double(index) * 0.02,
+                strokes: 3,
+                shichen: order[index % order.count]
+            )
+        }
     }
 #endif
 

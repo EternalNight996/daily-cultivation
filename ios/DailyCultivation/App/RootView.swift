@@ -234,6 +234,8 @@ struct RootView: View {
             activeSheet = .share
         case "settings":
             activeSheet = .settings
+        case "idle":
+            break
         case "settle":
             model.ritual.forceSettleForPreview()
         default:

@@ -114,7 +114,7 @@ jobs:
             echo "captured $name"
           }
 
-          capture shot.png
+          capture shot.png -dcPreviewState idle
           capture shot-onboarding.png -dcPreviewState onboarding
           capture shot-settings.png -dcPreviewState settings
           capture shot-settle.png -dcPreviewState settle
