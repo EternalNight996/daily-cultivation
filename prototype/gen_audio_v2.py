@@ -74,7 +74,7 @@ def make_tick():
     for freq, amp, decay in [(320, 0.9, 0.030), (540, 0.5, 0.022), (810, 0.25, 0.015)]:
         parts.append(tone(freq, 0.16, amp, decay, attack=0.001))
     body = np.sum(parts, axis=0)
-    click = noise_burst(0.03, 0.35, 0.004, lowpass=0.5)
+    click = noise_burst(0.03, 0.18, 0.004, lowpass=0.35)
     out = np.zeros(len(body))
     out[:len(body)] += body
     out[:len(click)] += click
