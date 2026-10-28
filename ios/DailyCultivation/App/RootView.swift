@@ -74,6 +74,15 @@ struct RootView: View {
                     .zIndex(21)
             }
 
+            if let upgrade = model.ritual.titleUpgrade {
+                TitleUpgradeView(title: upgrade,
+                                 streak: model.ritual.snapshot.streak) {
+                    model.ritual.dismissTitleUpgrade()
+                }
+                .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                .zIndex(26)
+            }
+
             if shouldShowOnboarding {
                 OnboardingView { onboarded = true }
                     .transition(.opacity)
@@ -236,6 +245,8 @@ struct RootView: View {
             activeSheet = .settings
         case "idle":
             break
+        case "upgrade":
+            model.ritual.forceTitleUpgradeForPreview()
         case "settle":
             model.ritual.forceSettleForPreview()
         default:
@@ -578,5 +589,66 @@ struct OnboardingView: View {
             }
         }
         .transition(.opacity)
+    }
+}
+
+// MARK: - 境界提升
+
+/// 跨过称号门槛时的那一下：一张纸、一个印、四个字。3 秒后自己走。
+struct TitleUpgradeView: View {
+    let title: Title
+    let streak: Int
+    let onDismiss: () -> Void
+
+    private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
+    private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.22)
+                .ignoresSafeArea()
+                .onTapGesture { onDismiss() }
+
+            VStack(spacing: 16) {
+                Text("境界提升")
+                    .font(.system(size: 11))
+                    .tracking(6)
+                    .foregroundStyle(ink.opacity(0.45))
+
+                Text(title.rawValue)
+                    .font(.custom("Songti SC", size: 46))
+                    .tracking(14)
+                    .foregroundStyle(ink.opacity(0.9))
+
+                Rectangle()
+                    .fill(cinnabar.opacity(0.45))
+                    .frame(width: 44, height: 1)
+
+                Text("连续修行 \(streak) 天")
+                    .font(.system(size: 12))
+                    .tracking(2)
+                    .foregroundStyle(ink.opacity(0.5))
+
+                if UIImage(named: "seal_chi") != nil {
+                    Image("seal_chi")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60)
+                        .padding(.top, 4)
+                }
+            }
+            .padding(.horizontal, 48)
+            .padding(.vertical, 34)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24))
+            .overlay(
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(cinnabar.opacity(0.28), lineWidth: 1)
+            )
+            .onTapGesture { onDismiss() }
+        }
+        .task {
+            try? await Task.sleep(nanoseconds: 3_200_000_000)
+            onDismiss()
+        }
     }
 }

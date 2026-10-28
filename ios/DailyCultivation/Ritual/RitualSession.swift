@@ -25,6 +25,8 @@ final class RitualSession {
     private(set) var settlement: QiBreakdown?
     var lastScore: Double?
     var hint: String?
+    /// 本次结算跨过了称号门槛时，这里放新称号，界面弹一次就清掉
+    private(set) var titleUpgrade: Title?
 
     var config = MatchConfig()
     var petResonance = true
@@ -99,6 +101,10 @@ final class RitualSession {
             )
         }
 
+        if snapshot.title != before.title {
+            titleUpgrade = snapshot.title
+        }
+
         Haptics.shared.success()
         AudioPool.shared.play(.complete)
 
@@ -121,7 +127,12 @@ final class RitualSession {
         reset()
     }
 
+    func dismissTitleUpgrade() {
+        titleUpgrade = nil
+    }
+
     func reset() {
+        titleUpgrade = nil
         strokeIndex = 0
         accepted = []
         settlement = nil
@@ -131,6 +142,11 @@ final class RitualSession {
     }
 
 #if DEBUG
+    /// 仅用于 CI 截图：弹出一次称号升级
+    func forceTitleUpgradeForPreview() {
+        titleUpgrade = .zhuji
+    }
+
     /// 仅用于 CI 截图：强制进入"今日圆满"态
     func forceRestingForPreview() {
         settlement = nil
