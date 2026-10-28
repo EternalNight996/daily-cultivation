@@ -232,6 +232,10 @@ struct RootView: View {
             activeSheet = .history
         case "share":
             activeSheet = .share
+        case "settings":
+            activeSheet = .settings
+        case "settle":
+            model.ritual.forceSettleForPreview()
         default:
             break
         }

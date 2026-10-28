@@ -136,6 +136,20 @@ final class RitualSession {
         settlement = nil
         phase = .resting
     }
+
+    /// 仅用于 CI 截图：造一个结算面板
+    func forceSettleForPreview() {
+        let shichen = Shichen.current()
+        settlement = QiCalculator.settle(QiContext(
+            shichenMultiplier: shichen.multiplier,
+            streakDays: max(snapshot.streak, 3),
+            isFirstOfDay: true,
+            petResonance: true,
+            dailyEarned: snapshot.earnedToday
+        ))
+        lastScore = 0.93
+        phase = .settling
+    }
 #endif
 
     /// 冷启动时调用：今天已满就直接进"圆满"态

@@ -7,8 +7,13 @@ on:
       - 'ios/**'
       - '.github/workflows/**'
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'ui = 只出截图（快）；full = 截图 + 真机 IPA'
+        type: choice
+        options: [ui, full]
+        default: ui
 
-# 同一分支只保留一次构建，新的 push 直接取消旧的，省 macOS 分钟
 concurrency:
   group: ios-build-${{ github.ref }}
   cancel-in-progress: true
@@ -33,6 +38,15 @@ jobs:
         working-directory: ios
         run: xcodegen generate
 
+      # 一边编译一边把模拟器开机，省掉后面 2–3 分钟的等待
+      - name: Boot simulator in background
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
+          echo "simulator=$DEVICE"
+          echo "SIM_DEVICE=$DEVICE" >> $GITHUB_ENV
+          xcrun simctl boot "$DEVICE" || true
+
       - name: Build for simulator (no signing)
         working-directory: ios
         run: |
@@ -51,10 +65,8 @@ jobs:
           set -o pipefail
           swift test 2>&1 | tee test.log
 
-      # 真机自测用：产物不签名，Windows 上用 Sideloadly 以免费 Apple ID 重签后装进 iPhone。
-      # 放在截图之前——出包只要 6–7 分钟，不用等模拟器那 5 分钟。
       - name: Build unsigned IPA (device)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full'
         working-directory: ios
         run: |
           set -o pipefail
@@ -74,41 +86,41 @@ jobs:
           ls -la DailyCultivation-unsigned.ipa
 
       - name: Upload unsigned IPA
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full'
         uses: actions/upload-artifact@v4
         with:
           name: ipa
           path: ios/DailyCultivation-unsigned.ipa
 
-      # 模拟器截图很费时间（约 5 分钟），放在最后，失败不影响出包
-      - name: Run in simulator and screenshot
+      # 一次跑完所有 UI 状态，看设计不用再等第二轮
+      - name: Capture UI states
         if: github.event_name == 'workflow_dispatch'
         continue-on-error: true
         working-directory: ios
         run: |
-          DEVICE=$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
+          DEVICE="${SIM_DEVICE:-$(xcrun simctl list devices available | grep -m1 "iPhone" | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')}"
           echo "device=$DEVICE"
-          xcrun simctl boot "$DEVICE" || true
           xcrun simctl bootstatus "$DEVICE" -b || true
           APP=$(find build/Build/Products -name "DailyCultivation.app" -maxdepth 3 | head -1)
           echo "app=$APP"
           xcrun simctl install "$DEVICE" "$APP"
 
-          # 三种状态各截一张：默认 / 今日圆满 / 修行录
           capture() {
             local name="$1"; shift
             xcrun simctl terminate "$DEVICE" com.dailycultivation.app >/dev/null 2>&1 || true
             xcrun simctl launch "$DEVICE" com.dailycultivation.app "$@" >/dev/null 2>&1 || true
-            sleep 6
+            sleep 5
             xcrun simctl io "$DEVICE" screenshot "$name"
             echo "captured $name"
           }
 
           capture shot.png
+          capture shot-onboarding.png -dcPreviewState onboarding
+          capture shot-settings.png -dcPreviewState settings
+          capture shot-settle.png -dcPreviewState settle
           capture shot-resting.png -dcPreviewState resting
           capture shot-history.png -dcPreviewState history
           capture shot-share.png -dcPreviewState share
-          capture shot-onboarding.png -dcPreviewState onboarding
           ls -la shot*.png
 
       - name: Export generated project
@@ -117,7 +129,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent DailyCultivation.xcodeproj DailyCultivation.xcodeproj.zip
           ls -la DailyCultivation.xcodeproj.zip
 
-      - name: Upload logs and screenshot
+      - name: Upload logs and screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -126,9 +138,5 @@ jobs:
             ios/build.log
             ios/build-device.log
             ios/TalismanKit/test.log
-            ios/shot.png
-            ios/shot-resting.png
-            ios/shot-history.png
-            ios/shot-share.png
-            ios/shot-onboarding.png
+            ios/shot*.png
             ios/DailyCultivation.xcodeproj.zip
