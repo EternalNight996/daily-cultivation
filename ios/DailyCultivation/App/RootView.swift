@@ -12,6 +12,7 @@ struct RootView: View {
     @AppStorage("dc.sound") private var soundOn = true
     @AppStorage("dc.haptics") private var hapticsOn = true
     @AppStorage("dc.judge") private var judgeLevel = 1
+    @AppStorage("dc.onboarded") private var onboarded = false
     @State private var activeSheet: ActiveSheet?
 
     private enum ActiveSheet: String, Identifiable {
@@ -71,6 +72,12 @@ struct RootView: View {
                 restingCard
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .zIndex(21)
+            }
+
+            if shouldShowOnboarding {
+                OnboardingView { onboarded = true }
+                    .transition(.opacity)
+                    .zIndex(30)
             }
         }
         .background { InkBackground(shichen: model.shichen) }
@@ -205,6 +212,14 @@ struct RootView: View {
         if model.ritual.phase == .settling { return .resonate }
         if model.ritual.lastScore != nil { return .cast }
         return .idle
+    }
+
+    private var shouldShowOnboarding: Bool {
+        if !onboarded { return true }
+#if DEBUG
+        if model.previewState == "onboarding" { return true }
+#endif
+        return false
     }
 
     private func applyPreviewStateIfNeeded() {
@@ -464,5 +479,83 @@ struct HistoryView: View {
             }
         }
         .padding(.vertical, 2)
+    }
+}
+
+// MARK: - 首次引导
+
+/// 第一次打开时教三件事：怎么起笔、几笔成符、一天几次。
+struct OnboardingView: View {
+    let onFinish: () -> Void
+
+    @State private var step = 0
+
+    private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
+    private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
+
+    private let pages: [(title: String, body: String)] = [
+        ("按住朱砂点", "从符头那颗红点起笔，顺着虚线走。偏一点也没关系，画得越贴，灵气越多。"),
+        ("三笔成符", "每一笔都要走到收笔处。三笔画完，符成、落印、灵气入体。"),
+        ("每日三符", "子时 ×1.6、午时 ×1.5，卯酉 ×1.3。画满三道就是圆满，明日 04:00 再来。")
+    ]
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.26).ignoresSafeArea()
+
+            VStack {
+                Spacer()
+
+                VStack(spacing: 18) {
+                    Text(pages[step].title)
+                        .font(.custom("Songti SC", size: 24))
+                        .tracking(8)
+                        .foregroundStyle(ink.opacity(0.9))
+
+                    Text(pages[step].body)
+                        .font(.system(size: 13))
+                        .lineSpacing(7)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(ink.opacity(0.55))
+                        .padding(.horizontal, 8)
+
+                    HStack(spacing: 6) {
+                        ForEach(0..<pages.count, id: \.self) { index in
+                            Circle()
+                                .fill(index == step ? cinnabar : ink.opacity(0.16))
+                                .frame(width: 5, height: 5)
+                        }
+                    }
+                    .padding(.top, 2)
+
+                    Button {
+                        if step < pages.count - 1 {
+                            withAnimation(.easeInOut(duration: 0.2)) { step += 1 }
+                        } else {
+                            onFinish()
+                        }
+                    } label: {
+                        Text(step < pages.count - 1 ? "下一步" : "开始画符")
+                            .font(.system(size: 14))
+                            .tracking(2)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 46)
+                            .background(RoundedRectangle(cornerRadius: 13).fill(cinnabar.opacity(0.92)))
+                    }
+                    .padding(.top, 6)
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 26)
+                .frame(maxWidth: .infinity)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24).stroke(ink.opacity(0.10), lineWidth: 1)
+                )
+                .padding(.horizontal, 22)
+                .padding(.bottom, 86)
+            }
+        }
+        .transition(.opacity)
     }
 }
