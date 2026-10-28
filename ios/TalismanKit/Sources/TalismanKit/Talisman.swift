@@ -95,9 +95,12 @@ public enum TalismanLibrary {
 
     public static let all = [qingxin, juling, yufeng, anshen, zhenzhai, bixie, qiming]
 
-    /// 每日一符：按"纪元日"取模轮换，同一天永远同一张，跨天自动换。
+    /// 每日一符：按"修炼日"取模轮换。
+    /// 修炼日以 04:00 为界（与 QiCalculator 的日界一致），所以先把时间前推 4 小时再取日序，
+    /// 这样凌晨 3 点画的仍是"昨天"的符。
     public static func daily(for date: Date = Date(), calendar: Calendar = .current) -> Talisman {
-        guard let day = calendar.ordinality(of: .day, in: .era, for: date), !all.isEmpty else {
+        let shifted = calendar.date(byAdding: .hour, value: -4, to: date) ?? date
+        guard let day = calendar.ordinality(of: .day, in: .era, for: shifted), !all.isEmpty else {
             return qingxin
         }
         return all[abs(day) % all.count]

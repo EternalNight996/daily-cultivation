@@ -31,19 +31,32 @@ final class TalismanLibraryTests: XCTestCase {
         }
     }
 
+    private func makeCalendar() -> Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Shanghai")!
+        return calendar
+    }
+
+    private func date(hour: Int, day: Int = 10) -> Date {
+        let calendar = makeCalendar()
+        return calendar.date(from: DateComponents(year: 2024, month: 5, day: day, hour: hour))!
+    }
+
     func testDailyIsStableWithinOneDay() {
-        let calendar = Calendar(identifier: .gregorian)
-        let morning = Date(timeIntervalSince1970: 1_700_000_000)
-        let evening = morning.addingTimeInterval(6 * 3600)
-        XCTAssertEqual(TalismanLibrary.daily(for: morning, calendar: calendar).id,
-                       TalismanLibrary.daily(for: evening, calendar: calendar).id)
+        let calendar = makeCalendar()
+        XCTAssertEqual(TalismanLibrary.daily(for: date(hour: 9), calendar: calendar).id,
+                       TalismanLibrary.daily(for: date(hour: 21), calendar: calendar).id)
+    }
+
+    func testDailyChangesAcrossTheFourAmBoundary() {
+        let calendar = makeCalendar()
+        XCTAssertNotEqual(TalismanLibrary.daily(for: date(hour: 3), calendar: calendar).id,
+                          TalismanLibrary.daily(for: date(hour: 5), calendar: calendar).id)
     }
 
     func testDailyRotatesToNextDay() {
-        let calendar = Calendar(identifier: .gregorian)
-        let today = Date(timeIntervalSince1970: 1_700_000_000)
-        let tomorrow = today.addingTimeInterval(24 * 3600)
-        XCTAssertNotEqual(TalismanLibrary.daily(for: today, calendar: calendar).id,
-                          TalismanLibrary.daily(for: tomorrow, calendar: calendar).id)
+        let calendar = makeCalendar()
+        XCTAssertNotEqual(TalismanLibrary.daily(for: date(hour: 10, day: 10), calendar: calendar).id,
+                          TalismanLibrary.daily(for: date(hour: 10, day: 11), calendar: calendar).id)
     }
 }
