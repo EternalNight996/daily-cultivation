@@ -16,6 +16,10 @@ final class CameraRenderer: NSObject, MTKViewDelegate, @unchecked Sendable {
     /// 只允许在主线程改（draw 也在主线程），因此不需要加锁
     private var palette = RenderPalette.forShichen(.current())
 
+    /// 相机画面是否走"水墨调色"。设置里可以关掉，方便对比原色。
+    /// 真机上如果觉得画面太灰，关掉这个开关即可回到原色。
+    var inkGradeEnabled = true
+
     func setShichen(_ shichen: Shichen) {
         palette = RenderPalette.forShichen(shichen)
     }
@@ -73,11 +77,14 @@ final class CameraRenderer: NSObject, MTKViewDelegate, @unchecked Sendable {
         let filled = scaled.transformed(by: CGAffineTransform(translationX: dx, y: dy))
 
         // 3) 调色：色温/饱和/辉光/暗角由时辰驱动
-        let graded = filled
+        let saturation = inkGradeEnabled ? palette.saturation * 0.22 : palette.saturation
+        let contrast = inkGradeEnabled ? palette.contrast * 0.88 : palette.contrast
+
+        var graded = filled
             .applyingFilter("CIColorControls", parameters: [
-                kCIInputSaturationKey: palette.saturation,
-                kCIInputContrastKey: palette.contrast,
-                kCIInputBrightnessKey: -0.01
+                kCIInputSaturationKey: saturation,
+                kCIInputContrastKey: contrast,
+                kCIInputBrightnessKey: inkGradeEnabled ? 0.03 : -0.01
             ])
             .applyingFilter("CITemperatureAndTint", parameters: [
                 "inputNeutral": CIVector(x: 6500, y: 0),
@@ -91,6 +98,23 @@ final class CameraRenderer: NSObject, MTKViewDelegate, @unchecked Sendable {
                 kCIInputIntensityKey: palette.vignetteIntensity,
                 kCIInputRadiusKey: 1.80
             ])
+
+        if inkGradeEnabled {
+            // 抬黑位、压高光：把照片"摊平成墨"，而不是简单去色
+            graded = graded
+                .applyingFilter("CIToneCurve", parameters: [
+                    "inputPoint0": CIVector(x: 0.00, y: 0.12),
+                    "inputPoint1": CIVector(x: 0.25, y: 0.36),
+                    "inputPoint2": CIVector(x: 0.50, y: 0.58),
+                    "inputPoint3": CIVector(x: 0.75, y: 0.79),
+                    "inputPoint4": CIVector(x: 1.00, y: 0.93)
+                ])
+                .applyingFilter("CIColorMatrix", parameters: [
+                    "inputRVector": CIVector(x: 0.97, y: 0, z: 0, w: 0),
+                    "inputGVector": CIVector(x: 0, y: 1.00, z: 0, w: 0),
+                    "inputBVector": CIVector(x: 0, y: 0, z: 1.03, w: 0)
+                ])
+        }
 
         return graded.cropped(to: CGRect(origin: .zero, size: size))
     }

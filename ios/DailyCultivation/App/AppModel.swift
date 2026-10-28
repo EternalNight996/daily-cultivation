@@ -42,6 +42,7 @@ final class AppModel {
             inkOnly = true
         }
         AudioPool.shared.prepare()
+        renderer.inkGradeEnabled = (UserDefaults.standard.object(forKey: "dc.inkCamera") as? Bool) ?? true
         shichen = Shichen.current()
         renderer.setShichen(shichen)
         ritual.refreshSnapshot()
@@ -107,6 +108,10 @@ final class AppModel {
         ritual.refreshSnapshot()
         ritual.syncDailyLimit()
         records = []
+    }
+
+    func applyInkCamera(_ enabled: Bool) {
+        renderer.inkGradeEnabled = enabled
     }
 
     func loadRecords() {

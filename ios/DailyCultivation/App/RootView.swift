@@ -336,7 +336,10 @@ struct SettingsView: View {
     @AppStorage("dc.sound") private var soundOn = true
     @AppStorage("dc.haptics") private var hapticsOn = true
     @AppStorage("dc.judge") private var judgeLevel = 1
+    @AppStorage("dc.inkCamera") private var inkCamera = true
+    @AppStorage("dc.onboarded") private var onboarded = false
     @State private var confirmReset = false
+    @State private var confirmResetAll = false
 
     private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
     private let cinnabar = Color(red: 0.557, green: 0.184, blue: 0.133)
@@ -348,10 +351,11 @@ struct SettingsView: View {
                 Section {
                     Toggle("音效", isOn: $soundOn)
                     Toggle("触感", isOn: $hapticsOn)
+                    Toggle("相机水墨调色", isOn: $inkCamera)
                 } header: {
                     Text("手感")
                 } footer: {
-                    Text("关掉后画符仍然可判，只是没有声音与震动。")
+                    Text("关掉音效与触感后画符仍可判定。相机调色关掉会回到原色画面。")
                 }
 
                 Section {
@@ -375,6 +379,7 @@ struct SettingsView: View {
 
                 Section("数据") {
                     Button("重置今日修行", role: .destructive) { confirmReset = true }
+                    Button("重置全部（含引导）", role: .destructive) { confirmResetAll = true }
                     LabeledContent("连续天数", value: "\(model.ritual.snapshot.streak) 天")
                     LabeledContent("今日灵气", value: "\(model.ritual.snapshot.earnedToday)")
                 }
@@ -399,11 +404,21 @@ struct SettingsView: View {
             .onChange(of: soundOn) { _, value in AudioPool.shared.setEnabled(value) }
             .onChange(of: hapticsOn) { _, value in Haptics.isEnabled = value }
             .onChange(of: judgeLevel) { _, value in model.applyJudgeLevel(value) }
+            .onChange(of: inkCamera) { _, value in model.applyInkCamera(value) }
             .confirmationDialog("重置今日记录？", isPresented: $confirmReset, titleVisibility: .visible) {
                 Button("重置", role: .destructive) { model.resetToday() }
                 Button("取消", role: .cancel) {}
             } message: {
                 Text("只清空今天的灵气与笔数，连续天数保留。")
+            }
+            .confirmationDialog("重置全部数据？", isPresented: $confirmResetAll, titleVisibility: .visible) {
+                Button("全部重置", role: .destructive) {
+                    model.resetToday()
+                    onboarded = false
+                }
+                Button("取消", role: .cancel) {}
+            } message: {
+                Text("清空所有修行记录与引导状态，下次打开会重新引导。")
             }
         }
         .tint(cinnabar)
