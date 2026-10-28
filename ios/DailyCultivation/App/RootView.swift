@@ -76,7 +76,8 @@ struct RootView: View {
 
             if let upgrade = model.ritual.titleUpgrade {
                 TitleUpgradeView(title: upgrade,
-                                 streak: model.ritual.snapshot.streak) {
+                                 streak: model.ritual.snapshot.streak,
+                                 autoDismiss: !previewHoldsUpgrade) {
                     model.ritual.dismissTitleUpgrade()
                 }
                 .transition(.opacity.combined(with: .scale(scale: 0.96)))
@@ -221,6 +222,15 @@ struct RootView: View {
         if model.ritual.phase == .settling { return .resonate }
         if model.ritual.lastScore != nil { return .cast }
         return .idle
+    }
+
+    /// 截图模式下让升级弹层停住，否则 3 秒后自动消失，截不到
+    private var previewHoldsUpgrade: Bool {
+#if DEBUG
+        return model.previewState == "upgrade"
+#else
+        return false
+#endif
     }
 
     private var shouldShowOnboarding: Bool {
@@ -598,6 +608,7 @@ struct OnboardingView: View {
 struct TitleUpgradeView: View {
     let title: Title
     let streak: Int
+    var autoDismiss: Bool = true
     let onDismiss: () -> Void
 
     private let ink = Color(red: 0.086, green: 0.125, blue: 0.145)
@@ -647,6 +658,7 @@ struct TitleUpgradeView: View {
             .onTapGesture { onDismiss() }
         }
         .task {
+            guard autoDismiss else { return }
             try? await Task.sleep(nanoseconds: 3_200_000_000)
             onDismiss()
         }

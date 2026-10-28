@@ -1,7 +1,7 @@
 
 from PIL import Image
-p = r"F:\MyApp\eternal\DailyCultivation\prototype\screens\ios-onboarding.jpg"
-im = Image.open(p)
-crop = im.crop((840, 2060, 1010, 2230)).resize((680, 680), Image.LANCZOS)
-crop.save(r"F:\MyApp\eternal\DailyCultivation\prototype\screens\_zoom.jpg", quality=92)
-print(crop.size)
+for name in ["bg_chang@3x.jpg", "bg_you@3x.jpg"]:
+    im = Image.open(r"F:\MyApp\eternal\DailyCultivation\assets\art\01-backgrounds\\" + name).convert("RGB")
+    im.thumbnail((380, 820))
+    im.save(r"F:\MyApp\eternal\DailyCultivation\prototype\screens\_" + name.split("@")[0] + ".jpg", quality=88)
+print("ok")

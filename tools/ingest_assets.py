@@ -12,7 +12,7 @@ from PIL import Image
 
 ROOT = r"F:\MyApp\eternal\DailyCultivation"
 SRC = os.path.join(ROOT, "assets", "_raw")
-ART = os.path.join(SRC, "art")
+ART = os.path.join(ROOT, "assets", "art")
 
 MAPPING = {
     # ===== 第一批：背景（2:3 → 9:16）=====
@@ -79,6 +79,29 @@ def pad_square(im, size):
     canvas.paste(im, ((side - w)//2, (side - h)//2), im)
     return canvas.resize((size, size), Image.LANCZOS)
 
+def neutralize_reds(im):
+    """去掉画面里的小红印/红点：它们会被误认成 UI 的朱砂点。
+
+    用 HSV 只挑"高饱和的正红"（收藏印那种），赭石色的黄昏与青绿山水不受影响。
+    PIL 的 HSV 里 H 是 0–255，红色集中在 0–12 与 243–255 两端。
+    """
+    import numpy as np
+    rgb = im.convert("RGB")
+    hsv = np.asarray(rgb.convert("HSV"), dtype=np.int16)
+    h, s, v = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    mask = ((h <= 12) | (h >= 243)) & (s >= 80) & (v >= 60)
+    if not mask.any():
+        return rgb
+
+    # 用大半径模糊后的局部色填掉印子，避免留下灰点
+    from PIL import ImageFilter
+    blurred = np.asarray(rgb.filter(ImageFilter.GaussianBlur(10)), dtype=np.uint8)
+    out = np.asarray(rgb, dtype=np.uint8).copy()
+    for c in range(3):
+        out[..., c][mask] = blurred[..., c][mask]
+    return Image.fromarray(out, "RGB")
+
+
 def do_background(path, name):
     im = Image.open(path).convert("RGB")
     w, h = im.size
@@ -94,6 +117,7 @@ def do_background(path, name):
     # 去掉右下角的"AI生成"水印：裁掉 6% 宽 + 3% 高后重新拉满画幅
     w2, h2 = im.size
     im = im.crop((0, 0, int(w2 * 0.94), int(h2 * 0.97)))
+    im = neutralize_reds(im)
     im = im.resize((1170, 2532), Image.LANCZOS)
     dst = os.path.join(ART, DIRS["background"], name)
     im.save(dst, "JPEG", quality=88, optimize=True, progressive=True)
