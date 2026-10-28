@@ -19,7 +19,7 @@ final class RitualSession {
     var isDailyLimitReached: Bool { snapshot.castsToday >= Self.dailyCastLimit }
 
     var phase: Phase = .drawing
-    var talisman: Talisman = TalismanLibrary.qingxin
+    var talisman: Talisman = TalismanLibrary.daily()
     private(set) var strokeIndex = 0
     private(set) var accepted: [[Vec2]] = []
     private(set) var settlement: QiBreakdown?

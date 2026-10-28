@@ -48,7 +48,60 @@ public enum TalismanLibrary {
         ]
     )
 
-    public static let all = [qingxin, juling, yufeng]
+    /// 安神符：一竖到底，两横带勾，适合"静下来"
+    public static let anshen = Talisman(
+        id: "anshen",
+        name: "安神符",
+        strokes: [
+            [p(0.50, 0.08), p(0.50, 0.30), p(0.52, 0.52), p(0.48, 0.74), p(0.44, 0.90)],
+            [p(0.24, 0.34), p(0.44, 0.32), p(0.58, 0.35), p(0.66, 0.42)],
+            [p(0.30, 0.60), p(0.46, 0.58), p(0.60, 0.62), p(0.66, 0.70), p(0.62, 0.78)]
+        ]
+    )
+
+    /// 镇宅符：一个方框压住，像把宅子框起来
+    public static let zhenzhai = Talisman(
+        id: "zhenzhai",
+        name: "镇宅符",
+        strokes: [
+            [p(0.30, 0.10), p(0.70, 0.10), p(0.70, 0.44), p(0.30, 0.44), p(0.30, 0.10)],
+            [p(0.50, 0.10), p(0.50, 0.44)],
+            [p(0.24, 0.56), p(0.76, 0.56), p(0.74, 0.60), p(0.26, 0.60), p(0.26, 0.56)],
+            [p(0.50, 0.60), p(0.50, 0.82), p(0.40, 0.90)]
+        ]
+    )
+
+    /// 辟邪符：连续的折笔，像一道一道地挡
+    public static let bixie = Talisman(
+        id: "bixie",
+        name: "辟邪符",
+        strokes: [
+            [p(0.20, 0.12), p(0.34, 0.26), p(0.46, 0.16), p(0.58, 0.30), p(0.70, 0.18), p(0.82, 0.32)],
+            [p(0.50, 0.30), p(0.50, 0.56), p(0.46, 0.74), p(0.36, 0.86)],
+            [p(0.28, 0.52), p(0.44, 0.50), p(0.56, 0.54), p(0.62, 0.62)]
+        ]
+    )
+
+    /// 启明符：一道弧像初升的日头
+    public static let qiming = Talisman(
+        id: "qiming",
+        name: "启明符",
+        strokes: [
+            arc(cx: 0.50, cy: 0.22, rx: 0.15, ry: 0.13, from: 0.15 * Double.pi, to: 0.85 * Double.pi, steps: 14),
+            [p(0.50, 0.34), p(0.50, 0.62), p(0.48, 0.80), p(0.40, 0.90)],
+            [p(0.26, 0.50), p(0.42, 0.46), p(0.54, 0.50), p(0.62, 0.58)]
+        ]
+    )
+
+    public static let all = [qingxin, juling, yufeng, anshen, zhenzhai, bixie, qiming]
+
+    /// 每日一符：按"纪元日"取模轮换，同一天永远同一张，跨天自动换。
+    public static func daily(for date: Date = Date(), calendar: Calendar = .current) -> Talisman {
+        guard let day = calendar.ordinality(of: .day, in: .era, for: date), !all.isEmpty else {
+            return qingxin
+        }
+        return all[abs(day) % all.count]
+    }
 
     private static func p(_ x: Double, _ y: Double) -> Vec2 { Vec2(x: x, y: y) }
 
